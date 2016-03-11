@@ -1,0 +1,21 @@
+{
+    "name": "comradepashka/yii2-gallery",
+    "description": "Gallery etension for Yii2 framework with albums, images, extra info and tools for each image",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","gallery","images"],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Pavel Sokolov",
+            "email": "comradepashka@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "comradepashka\\gallery\\": ""
+        }
+    }
+}
