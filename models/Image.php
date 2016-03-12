@@ -30,7 +30,7 @@ class Image extends ActiveRecord
     }
     public function getUrl()
     {
-        return "URL!";
+        return "placeholder.png";
     }
     public function getFileName()
     {

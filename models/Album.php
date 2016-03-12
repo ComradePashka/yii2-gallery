@@ -20,8 +20,8 @@ use yii\base\Model;
 class Album extends Model
 {
     public $path;
-    public $albums;
-    public $images;
+    public $albums = [];
+    public $images = [];
 
     private static $_galleryRootPath;
     private static $_galleryWebPath;
@@ -63,11 +63,20 @@ class Album extends Model
     {
         return self::$_galleryWebPath . $this->path;
     }
-
     public function getName()
     {
         return preg_replace("/.*\/(.+)\/$/", "\\1", $this->path);
     }
+
+    public function getAlbumByPath($path)
+    {
+        if ($this->path == $path) return $this;
+
+        foreach ($this->albums as $a) {
+        }
+        return null;
+    }
+
 
     public function getTree($currentPath = "/", $level = 0)
     {
@@ -76,11 +85,11 @@ class Album extends Model
             'data' => $this->path,
             'state' => ['selected' => $currentPath == $this->path]
         ];
-        if ($this->albums) {
+//        if ($this->albums) {
             foreach ($this->albums as $a) {
                 $ret['nodes'][] = $a->getTree($currentPath, $level + 1);
             }
-        }
+//        }
         return $ret;
     }
 

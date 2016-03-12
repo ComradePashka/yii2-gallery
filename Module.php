@@ -20,7 +20,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             $this->galleries['default'] = [
                 'root' => '@frontend/web/images',
                 'webRoot' => '/images',
-                'placeholder' => 'placeholder.jpg',
+                'placeholder' => '/placeholder.jpg',
                 'extensions' => '/(jpg|png|gif)$/i',
                 'versions' => [
                     "small" =>
