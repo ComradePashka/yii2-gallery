@@ -11,7 +11,9 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "*"
+        "yiisoft/yii2": "*",
+        "execut/yii2-widget-bootstraptreeview": "*",
+        "devgroup/yii2-dropzone": "*"
     },
     "autoload": {
         "psr-4": {

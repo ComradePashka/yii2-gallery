@@ -7,21 +7,37 @@
  */
 
 use comradepashka\gallery\Module;
+use yii\helpers\Html;
 
 $module = Module::getInstance();
-echo "Hello! test: ". json_encode($module->test) ." test2: $module->test2 test3: $module->test3 params: " . $module->params['foo'];
 
+foreach ($module->galleries as $galleryName => $gallery) {
+    ?>
+    <div class='col-xs-3'>
+        <div class='panel panel-default'>
+            <div class='panel-heading'><?= $galleryName ?></div>
+            <div class='panel-body'>
+                <table class='table table-condensed'>
+                    <tr>
+                        <td><b>Root: </b></td>
+                        <td><?= $gallery['root'] ?></td>
+                    </tr>
+                    <tr>
+                        <td><b>Web Root: </b></td>
+                        <td><?= $gallery['webRoot'] ?></td>
+                    </tr>
+                    <tr>
+                        <td><b>Placeholder: </b></td>
+                        <td><?= $gallery['placeholder'] ?></td>
+                    </tr>
+                    <tr>
+                        <td><b>Extensions: </b></td>
+                        <td><?= $gallery['extensions'] ?></td>
+                    </tr>
+                </table><?= Html::a("->", ['album/', 'gallery' => $galleryName], ['class' => 'btn btn-primary text-center']) ?>
+            </div>
+        </div>
+    </div>
+    <?php
+}
 ?>
-
-<div class="gallery-default-index">
-    <h1><?= $this->context->action->uniqueId ?></h1>
-<p>
-    This is the view content for action "<?= $this->context->action->id ?>".
-    The action belongs to the controller "<?= get_class($this->context) ?>"
-    in the "<?= $this->context->module->id ?>" module.
-</p>
-<p>
-    You may customize this page by editing the following file:<br>
-    <code><?= __FILE__ ?></code>
-</p>
-</div>

@@ -8,13 +8,15 @@
 
 namespace comradepashka\gallery\controllers;
 
-
 use yii\web\Controller;
+use comradepashka\gallery\Module;
 
 class DefaultController extends Controller
 {
     public function actionIndex()
     {
-        return $this->render('index');
+        $galleries = $this->module->galleries;
+        if (count($galleries) == 1 && isset($galleries['default'])) return $this->redirect(['album/']);
+        else return $this->render('index');
     }
 }

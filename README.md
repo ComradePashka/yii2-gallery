@@ -10,13 +10,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist comradepashka/yii2-gallery "*"
+php composer.phar require --prefer-dist comradepashka/yii2-gallery "dev-master"
 ```
 
 or add
 
 ```
-"comradepashka/yii2-gallery": "*"
+"comradepashka/yii2-gallery": "dev-master"
 ```
 
 to the require section of your `composer.json` file.
