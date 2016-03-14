@@ -11,6 +11,10 @@ use yii\helpers\Html;
 
 $module = Module::getInstance();
 
+echo "test!";
+asdf
+exit;
+
 foreach ($module->galleries as $galleryName => $gallery) {
     ?>
     <div class='col-xs-3'>

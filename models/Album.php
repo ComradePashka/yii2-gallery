@@ -16,135 +16,99 @@ use yii\base\Model;
  * return preg_replace("#/*$#", "/", self::$_galleryRootPath . $this->path);
  *
  */
-
 class Album extends Model
 {
+    /**
+     * @var Gallery
+     */
+    public $gallery;
     public $path;
-    public $albums = [];
-    public $images = [];
 
-    private static $_galleryRootPath;
-    private static $_galleryWebPath;
-    private static $_placeholder;
-    private static $_extensions;
-    private static $_versions;
-    private static $_versionRegexp;
-
-    public function __construct($path = "/", $createLoaves = true)
+    public function getRootPath()
     {
-        $this->path = $path;
-        if (empty($path)) {
-            $this->addError("path", "Path is not set!");
-            return;
-        }
-        if (!is_dir($this->getPath())) {
-            $this->addError("path", $this->getPath() . " is not directory!");
-            return;
-        }
-        $h = opendir($this->getPath());
-        while (false !== ($entry = readdir($h))) {
-            if ($entry != "." && $entry != "..") {
-                if (is_dir($this->getPath() . $entry)) {
-                    $this->albums[] = new Album($path . $entry . "/", false);
-                }
-                if ($createLoaves && is_file($this->getPath() . $entry) && preg_match(self::$_extensions, $entry) && !preg_match(self::$_versionRegexp, $entry)) {
-                    $this->images[] = new Image($this->getPath() . $entry);
-                }
-            }
-        }
-        closedir($h);
+        return $this->gallery->getRoot() . $this->path;
     }
-
-    public function getPath()
+    public function getWebRootPath()
     {
-        return self::$_galleryRootPath . $this->path;
-    }
-    public function getWebPath()
-    {
-        return self::$_galleryWebPath . $this->path;
+        return $this->gallery->getWebRoot() . $this->path;
     }
     public function getName()
     {
         return preg_replace("/.*\/(.+)\/$/", "\\1", $this->path);
     }
-
-    public function getAlbumByPath($path)
+    public function create($name)
+    {
+        if (@mkdir($this->RootPath . $name)) return new Album(['path' => $this->path . $name . "/", 'gallery' => $this->gallery]);
+        else {
+            $this->addError("path", "Can not create album: $name");
+            return $this;
+        }
+    }
+    public function update($newname)
+    {
+        if (@rename($this->RootPath, dirname($this->RootPath) . "/" . $newname)) {
+            $this->path = preg_replace("/.*\/(.+)\/$/", $newname, $this->path);
+        }
+        else {
+            $this->addError("path", "Can not rename album: $this->Name");
+        }
+        return $this;
+    }
+    public function delete()
+    {
+        if (!@rmdir($this->RootPath)) {
+            $this->addError("path", "Can not delete album: $this->Name");
+        }
+        return $this;
+//        Yii::info('Deleting ' . self::imageRoot . $path, 'albums');
+    }
+    public function find($path)
     {
         if ($this->path == $path) return $this;
-
         foreach ($this->albums as $a) {
+            if ($album = $a->find($path)) return $album;
         }
         return null;
     }
-
-
-    public function getTree($currentPath = "/", $level = 0)
+    public function getAlbums()
     {
+        $albums = [];
+        $h = opendir($this->RootPath);
+        while (false !== ($entry = readdir($h))) {
+            if ($entry != "." && $entry != "..") {
+                if (is_dir($this->RootPath . $entry)) {
+                    $albums[] = new Album(['path' => $this->path . $entry . "/", 'gallery' => $this->gallery]);
+                }
+            }
+        }
+        closedir($h);
+        return $albums;
+    }
+    public function getImages()
+    {
+        $images = [];
+        $h = opendir($this->RootPath);
+        while (false !== ($entry = readdir($h))) {
+            if ($entry != "." && $entry != "..") {
+                if (is_file($this->RootPath . $entry) && preg_match($this->gallery->extensions, $entry) && !preg_match($this->gallery->versionRegexp, $entry)) {
+                    $images[] = new Image(['path' => $this->WebRootPath . $entry]);
+                }
+            }
+        }
+        closedir($h);
+        return $images;
+    }
+    public function getTree($level = 0)
+    {
+        $currentPath = $this->gallery->CurrentPath;
         $ret = [
             'text' => $this->getName(),
             'data' => $this->path,
             'state' => ['selected' => $currentPath == $this->path]
         ];
-//        if ($this->albums) {
-            foreach ($this->albums as $a) {
-                $ret['nodes'][] = $a->getTree($currentPath, $level + 1);
-            }
-//        }
-        return $ret;
-    }
-
-    public static function setGalleryConfig($config)
-    {
-        self::setGalleryRootPath($config['root']);
-        self::setGalleryWebPath($config['webRoot']);
-        self::setGalleryPlaceholder($config['placeholder']);
-        self::setGalleryExtensions($config['extensions']);
-        self::setGalleryVersions($config['versions']);
-    }
-
-    public static function setGalleryRootPath($path)
-    {
-        self::$_galleryRootPath = yii::getAlias($path);
-    }
-    public static function getGalleryRootPath()
-    {
-        return self::$_galleryRootPath;
-    }
-    public static function setGalleryWebPath($path)
-    {
-        self::$_galleryWebPath = $path;
-    }
-    public static function getGalleryWebPath()
-    {
-        return self::$_galleryWebPath;
-    }
-    public static function setGalleryPlaceholder($path)
-    {
-        self::$_placeholder = new Image(self::getGalleryWebPath() . $path);
-    }
-    public function getGalleryPlaceholder()
-    {
-        return self::$_placeholder;
-    }
-    public static function setGalleryExtensions($extensions)
-    {
-        self::$_extensions = $extensions;
-    }
-    public function getGalleryExtensions()
-    {
-        return self::$_extensions;
-    }
-    public static function setGalleryVersions($versions)
-    {
-        self::$_versions = $versions;
-        self::$_versionRegexp = "/-(";
-        foreach ($versions as $k => $v) {
-            self::$_versionRegexp .= "$k|";
+        foreach ($this->albums as $a) {
+            $ret['nodes'][] = $a->getTree($level + 1);
         }
-        self::$_versionRegexp = preg_replace("/\|$/", ")\./i", self::$_versionRegexp);
-    }
-    public function getGalleryVersions()
-    {
-        return self::$_versions;
+        return $ret;
     }
 }

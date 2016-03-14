@@ -8,19 +8,47 @@
 
 namespace comradepashka\gallery\controllers;
 
-
 use Yii;
 use yii\web\Controller;
 use comradepashka\gallery\Module;
-use comradepashka\gallery\models\Album;
 
 class AlbumController extends Controller
 {
     public function actionIndex($gallery = 'default', $currentPath = '/')
     {
-//        Album::setGalleryRootPath($this->module->galleries[$gallery]['root']);
-//        Album::setGalleryWebPath($this->module->galleries[$gallery]['webRoot']);
-        Album::setGalleryConfig($this->module->galleries[$gallery]);
         return $this->render('index', ['gallery' => $gallery, 'currentPath' => $currentPath]);
+    }
+    public function actionCreate($gallery = 'default', $currentPath = '/')
+    {
+        if ($name = yii::$app->request->post('name')) {
+            $album = $this->module->galleries[$gallery]->rootAlbum->find($currentPath)->create($name);
+            if (!$album->hasErrors()){
+                return "ok";
+            } else {
+                return "error: " . $album->getFirstError("path");
+            }
+        } else {
+            return $this->renderAjax('create', ['gallery' => $gallery, 'currentPath' => $currentPath]);
+        }
+    }
+    public function actionUpdate($gallery = 'default', $currentPath = '/')
+    {
+        $album = $this->module->galleries[$gallery]->rootAlbum->find($currentPath);
+        if ($name = yii::$app->request->post('name')) {
+            $album->update($name);
+            if (!$album->hasErrors()){
+                return "ok";
+            } else {
+                return "error: " . $album->getFirstError("path");
+            }
+        } else {
+            return $this->renderAjax('update', ['gallery' => $gallery, 'currentPath' => $currentPath, 'name' => $album->Name]);
+        }
+    }
+
+    public function actionDelete($gallery = 'default', $currentPath = '/')
+    {
+        $album = $this->module->galleries[$gallery]->rootAlbum->find($currentPath)->delete();
+        return "ok";
     }
 }

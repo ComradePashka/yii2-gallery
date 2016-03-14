@@ -19,10 +19,7 @@ use yii\db\ActiveRecord;
 
 class Image extends ActiveRecord
 {
-    public $p;
-    public function __construct($path) {
-        $this->p = $path;
-    }
+    public $path;
 
     public static function tableName()
     {
@@ -30,15 +27,14 @@ class Image extends ActiveRecord
     }
     public function getUrl()
     {
-        return "placeholder.png";
+        return $this->path;
     }
     public function getFileName()
     {
-        return "FileName.jpg";
+        return preg_replace("/.*\/(.+)$/", "\\1", $this->path);
     }
-    public function getShortFileName()
+    public function getShortFileName($length = 18, $suffix = "...")
     {
-        return "ShortFileName.jpg";
+        return substr($fn = $this->getFileName(), 0, $length) . ((strlen($fn) > $length) ? $suffix : "");
     }
-
 }

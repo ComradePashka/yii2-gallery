@@ -1,26 +1,24 @@
 <?php
 namespace comradepashka\gallery;
 
+use Yii;
 use yii\base\BootstrapInterface;
-use yii\imagine\Image;
+use yii\web\Application;
+use yii\web\View;
 
 class Module extends \yii\base\Module implements BootstrapInterface
 {
-    public $test;
-
-    public $test2;
-
     public $galleries = [];
-
     public $controllerNamespace = 'comradepashka\gallery\controllers';
 
     public function bootstrap($app)
     {
         if (!$this->galleries)
             $this->galleries['default'] = [
+                'class' => 'comradepashka\gallery\models\Gallery',
                 'root' => '@frontend/web/images',
                 'webRoot' => '/images',
-                'placeholder' => '/placeholder.jpg',
+                'placeholder' => 'placeholder.jpg',
                 'extensions' => '/(jpg|png|gif)$/i',
                 'versions' => [
                     "small" =>
@@ -33,6 +31,28 @@ class Module extends \yii\base\Module implements BootstrapInterface
                         }
                 ]
             ];
+        $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app) {
+            $app->getView()->on(View::EVENT_END_BODY, [$this, 'registerToolsAsset']);
+        });
+
+    }
+
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        foreach ($this->galleries as $id => $config) {
+            $config['module'] = $this;
+            $this->galleries[$id] = Yii::createObject($config);
+            return true;
+        }
+    }
+
+    public function registerToolsAsset($event)
+    {
+        $view = $event->sender;
+        ToolsAsset::register($view);
     }
 
     public function init()
