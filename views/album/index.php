@@ -7,6 +7,7 @@
  */
 
 use comradepashka\gallery\models\Album;
+use comradepashka\gallery\models\Image;
 use comradepashka\gallery\Module;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
@@ -31,23 +32,25 @@ $this->registerCss("
     .toolbox:hover { opacity: 1 }
 ");
 
-$this->registerJs('
-    $("document").ready(function(){
+$this->registerJs("
+    $('document').ready(function(){
         $.pjax.defaults.scrollTo = false,
         $.pjax.defaults.push = false;
         $.pjax.defaults.timeout = null;
-        $(document).on("pjax:beforeSend", function(e, xhr, options) {
+        $(document).on('pjax:beforeSend', function(e, xhr, options) {
             if (e.relatedTarget != null) {
-                if (e.relatedTarget.type.toLowerCase() == "post") {
-                    options.type = "post";
+                if (e.relatedTarget.type.toLowerCase() == 'post') {
+                    options.type = 'post';
                 }
             }
         });
-        $("#pjax-albums").on("pjax:end", function() {
-            $.pjax({container: "#pjax-images"});
+        $('#pjax-albums').on('pjax:end', function(event, xhr, opt) {
+            if (matches = opt.url.match(/\?currentPath=\/(&|$)/)) $('.btn-target').addClass('disabled');
+            else $('.btn-target').removeClass('disabled');
+            $.pjax({container: '#pjax-images', url: opt.url});
         });
     });
-    ');
+    ");
 
 Modal::begin(['id' => 'popup-modal']);
 echo Html::tag("div", 'test', ['id' => 'popup-modal-content']);
@@ -92,19 +95,11 @@ echo TreeView::widget([
         'expandIcon' => 'glyphicon glyphicon-folder-close',
         'collapseIcon' => 'glyphicon glyphicon-folder-open',
         'onNodeSelected' => new JsExpression("function (event, item) {
-            console.log('SEL!');
-            if (item.nodeId == 0) $('.btn-target').addClass('disabled');
-            else $('.btn-target').removeClass('disabled');
             $.pjax({
-                container: '#pjax-images',
+                container: '#pjax-albums',
                 url: location.pathname + '?currentPath=' + item.data,
             });
-        }"),
-        'onNodeUnselected' => new JsExpression("function (event, item) {
-            if ($('#albums').treeview('getSelected') == '') {
-                $.pjax({container: '#pjax-albums'});
-            }
-        }"),
+        }")
     ],
 ]);
 Pjax::end();
@@ -118,7 +113,7 @@ Pjax::begin([
 ]);
 
 $album->gallery->currentPath = $currentPath;
-$images = $album->find($currentPath)->images;
+$images = $album->find($currentPath)->images; //->with('imageSeo','imageExtra','imageAuthors')->all();
 echo "<div>Path: $currentPath</div>" .
     Html::tag("div",
         Html::a("Some buttons", ['create', 'currentPath' => $currentPath], [
@@ -135,49 +130,58 @@ $n = 0;
 $row = "";
 
 foreach ($images as $i) {
-    $imageUrl = $i->getUrl();
+    $state = "";
+    switch($i->State) {
+        case Image::STATE_EMPTY:
+            $imageUrl = $i->gallery->Placeholder;
+            $state = "EMPTY";
+            break;
+        case Image::STATE_UNSAVED:
+            $imageUrl = $i->path;
+            $state = "UNSAVED";
+            break;
+        case Image::STATE_BROKEN:
+            $imageUrl = $i->gallery->Placeholder;
+            $state = "BROKEN";
+            break;
+        default:
+            $imageUrl = $i->path;
+            $state = "NORMAL";
+            break;
+    }
+    $allBtnClass = "showModalButton btn";
+    $btnImageSEO = $btnImageExtra = $btnImageAuthors = $btnImageThumbs = $btnImageDelete = $allBtnClass;
 
-    $allBtnClass = "showModalButton btn btn-images-extra";
+    if ($i->imageSEO) $btnImageSEO .= " btn-info"; else $btnImageSEO .= " btn-warning";
+    $btnImageExtra = $btnImageThumbs .= " btn-info";
+//    if ($i.ImageExtra) $btnImageSEO .= " btn-default"; else $btnImageSEO .= " btn-warning";
+    if ($i->imageAuthors) $btnImageAuthors .= " btn-info"; else $btnImageAuthors .= " btn-warning";
+    $btnImageDelete .= " btn-danger";
+
     $versionBtnClass = "btnImageVersions ";
+    $allBtnClass ="";
+
+// btn-default btn-info btn-warning disabled
     /*
-        if ($i->getState() == Image::IMAGE_STATE_NORMAL) {
-    //            $versionBtnClass .= "btn-default";
-        } else {
-            $versionBtnClass .= "btn-warning";
-        }
-        if ($i->getState() & Image::IMAGE_STATE_ORIGINAL) {
-            $allBtnClass .= " btn-default";
-        } else {
-            $allBtnClass .= " disabled";
-            $imageUrl = Image::imagePlaceholder;
-        }
-        if ($i->getState() & Image::IMAGE_STATE_THUMBS_ALL) {
-            $imageUrl = $i->getUrlVersion("small");
-        } else {
-            if ($i->getState() & Image::IMAGE_STATE_THUMBS) {
-                $versionBtnClass .= "btn-info";
-            } else {
-            }
-        }
     */
     $row .= "
 <div class='col-xs-2'>
 <div class='thumbnail'>
-    <a href='#' title='{$i->getFileName()}'><img src='{$imageUrl}' class='thumb' /></a>
-    <div class='text-center'><small>{$i->getShortFileName()}</small></div>
+    <a href='#' title='{$i->Name}'><img src='{$imageUrl}' class='thumb' /></a>
+    <div class='text-center'><small>{$i->ShortFileName}</small></div>
+    <div class='text-center'><small>{$state}</small></div>
     <div class='caption text-center toolbox'>" .
         Html::tag('div',
             Html::a(Icon::show('edit', [], Icon::WHHG), ['/image-seo', 'image_id' => $i->id], [
-                'class' => "btnImageEdit $allBtnClass"]) .
+                'class' => $btnImageSEO]) .
             Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['image/x', 'id' => $i->id], [
-                'class' => "btnImageMeta $allBtnClass"]) .
+                'class' => $btnImageExtra]) .
             Html::a(Icon::show('user', [], Icon::WHHG), ['image/u', 'id' => $i->id], [
-                'class' => "btnImageAuthors $allBtnClass"]) .
-// , 'data-toggle' => 'modal', 'data-target' => '#imageAuthorModal'
+                'class' => $btnImageAuthors]) .
             Html::a(Icon::show('resize', [], Icon::WHHG), ['image/save-versions', 'id' => $i->id], [
-                'class' => "$allBtnClass$versionBtnClass"]) .
+                'class' => $btnImageThumbs]) .
             Html::a(Icon::show('remove', [], Icon::WHHG), ['image/delete', 'id' => $i->id], [
-                'class' => "btnImageDelete btn btn-danger", 'type' => 'post']),
+                'class' => $btnImageDelete, 'type' => 'post']),
             ['class' => 'btn-group btn-group-xs']
         ) .
         "</div>
@@ -190,16 +194,13 @@ foreach ($images as $i) {
 }
 
 echo Html::tag("div", $row, ['class' => 'row']);
-// echo "<!-- " . json_encode($files) . " -->";
 
 //////////////////////////////////////////////////////
 // Dropzone for file uploading
 //
 
 echo DropZone::widget([
-    'url' => Url::to(["image/upload", 'path' => $currentPath]),
-//    'name' => 'file',
-//    'htmlOptions' => ['class' => 'dropZone'],
+    'url' => Url::to(["image/upload", 'currentPath' => $currentPath]),
     'options' => [
         'maxFilesize' => '8',
     ],

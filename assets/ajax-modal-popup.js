@@ -13,13 +13,13 @@ $(function () {
         if ($(targetModal).attr('pjax-callback-container') == undefined) {
             $(targetModal).attr('pjax-callback-container', $(this).attr('data-modal-pjax-callback-container'));
         }
-        pjaxCallback = function() {
-            if ($(targetModalContent).text() == "ok") {
+        pjaxCallback = function () {
+            if (matches = $(targetModalContent).text().match(/^location:(.+)/)) {
                 $(targetModal).delay(500).modal('hide');
                 if ($(targetModal).attr('pjax-callback-container') != undefined) {
                     $.pjax({
                         container: $(targetModal).attr('pjax-callback-container'),
-//                        url: location.pathname + '?currentPath=' + item.data,
+                        url: matches[1]
                     });
                 }
             }

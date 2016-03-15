@@ -32,6 +32,10 @@ class Album extends Model
     {
         return $this->gallery->getWebRoot() . $this->path;
     }
+    public function getParentPath()
+    {
+        return preg_replace("/[^\/]+\/$/", "", $this->path);
+    }
     public function getName()
     {
         return preg_replace("/.*\/(.+)\/$/", "\\1", $this->path);
@@ -47,7 +51,8 @@ class Album extends Model
     public function update($newname)
     {
         if (@rename($this->RootPath, dirname($this->RootPath) . "/" . $newname)) {
-            $this->path = preg_replace("/.*\/(.+)\/$/", $newname, $this->path);
+//            $this->path = preg_replace("/([^\/]+)\/$/", "$newname/", $this->path);
+            $this->path = $this->ParentPath . $newname . "/";
         }
         else {
             $this->addError("path", "Can not rename album: $this->Name");
@@ -59,6 +64,7 @@ class Album extends Model
         if (!@rmdir($this->RootPath)) {
             $this->addError("path", "Can not delete album: $this->Name");
         }
+        $this->path = $this->ParentPath;
         return $this;
 //        Yii::info('Deleting ' . self::imageRoot . $path, 'albums');
     }
@@ -91,7 +97,7 @@ class Album extends Model
         while (false !== ($entry = readdir($h))) {
             if ($entry != "." && $entry != "..") {
                 if (is_file($this->RootPath . $entry) && preg_match($this->gallery->extensions, $entry) && !preg_match($this->gallery->versionRegexp, $entry)) {
-                    $images[] = new Image(['path' => $this->WebRootPath . $entry]);
+                    $images[] = new Image(['path' => $this->WebRootPath . $entry, 'gallery' => $this->gallery]);
                 }
             }
         }

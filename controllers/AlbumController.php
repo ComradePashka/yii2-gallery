@@ -23,7 +23,7 @@ class AlbumController extends Controller
         if ($name = yii::$app->request->post('name')) {
             $album = $this->module->galleries[$gallery]->rootAlbum->find($currentPath)->create($name);
             if (!$album->hasErrors()){
-                return "ok";
+                return "location:?currentPath=" . $album->path;
             } else {
                 return "error: " . $album->getFirstError("path");
             }
@@ -37,7 +37,7 @@ class AlbumController extends Controller
         if ($name = yii::$app->request->post('name')) {
             $album->update($name);
             if (!$album->hasErrors()){
-                return "ok";
+                return "location:?currentPath=" . $album->path;
             } else {
                 return "error: " . $album->getFirstError("path");
             }
@@ -49,6 +49,6 @@ class AlbumController extends Controller
     public function actionDelete($gallery = 'default', $currentPath = '/')
     {
         $album = $this->module->galleries[$gallery]->rootAlbum->find($currentPath)->delete();
-        return "ok";
+        return "location:?currentPath=" . $album->path;
     }
 }
