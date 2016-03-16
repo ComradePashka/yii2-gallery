@@ -9,20 +9,18 @@
 use comradepashka\gallery\Module;
 use yii\helpers\Html;
 
-$module = Module::getInstance();
-
 echo "test!";
 
-foreach ($module->galleries as $galleryName => $gallery) {
+foreach (Module::$galleries as $gallery) {
     ?>
     <div class='col-xs-3'>
         <div class='panel panel-default'>
-            <div class='panel-heading'><?= $galleryName ?></div>
+            <div class='panel-heading'><?= $gallery->name ?></div>
             <div class='panel-body'>
                 <table class='table table-condensed'>
                     <tr>
                         <td><b>Root: </b></td>
-                        <td><?= $gallery['rootPath'] ?></td>
+                        <td><?= $gallery->RootPath ?></td>
                     </tr>
                     <tr>
                         <td><b>Web Root: </b></td>
@@ -36,7 +34,7 @@ foreach ($module->galleries as $galleryName => $gallery) {
                         <td><b>Extensions: </b></td>
                         <td><?= $gallery['extensions'] ?></td>
                     </tr>
-                </table><?= Html::a("->", ['album/', 'gallery' => $galleryName], ['class' => 'btn btn-primary text-center']) ?>
+                </table><?= Html::a("->", ['', 'gallery' => $gallery->name], ['class' => 'btn btn-primary text-center']) ?>
             </div>
         </div>
     </div>

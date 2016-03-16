@@ -14,26 +14,28 @@ use comradepashka\gallery\Module;
 
 class AlbumController extends Controller
 {
-    public function actionIndex($gallery = 'default', $currentPath = '/')
+//$gallery = 'default', $currentPath = '/'
+    public function actionIndex()
     {
-        return $this->render('index', ['gallery' => $gallery, 'currentPath' => $currentPath]);
+//        return $this->render('index', ['gallery' => $gallery, 'currentPath' => $currentPath]);
+        return $this->render('index');
     }
-    public function actionCreate($gallery = 'default', $currentPath = '/')
+    public function actionCreate()
     {
         if ($name = yii::$app->request->post('name')) {
-            $album = $this->module->galleries[$gallery]->rootAlbum->find($currentPath)->create($name);
+            $album = Module::$currentAlbum->create($name);
             if (!$album->hasErrors()){
                 return "location:?currentPath=" . $album->path;
             } else {
                 return "error: " . $album->getFirstError("path");
             }
         } else {
-            return $this->renderAjax('create', ['gallery' => $gallery, 'currentPath' => $currentPath]);
+            return $this->renderAjax('create');
         }
     }
-    public function actionUpdate($gallery = 'default', $currentPath = '/')
+    public function actionUpdate()
     {
-        $album = $this->module->galleries[$gallery]->rootAlbum->find($currentPath);
+        $album = Module::$currentAlbum;
         if ($name = yii::$app->request->post('name')) {
             $album->update($name);
             if (!$album->hasErrors()){
@@ -42,13 +44,13 @@ class AlbumController extends Controller
                 return "error: " . $album->getFirstError("path");
             }
         } else {
-            return $this->renderAjax('update', ['gallery' => $gallery, 'currentPath' => $currentPath, 'name' => $album->Name]);
+            return $this->renderAjax('update');
         }
     }
 
-    public function actionDelete($gallery = 'default', $currentPath = '/')
+    public function actionDelete()
     {
-        $album = $this->module->galleries[$gallery]->rootAlbum->find($currentPath)->delete();
+        $album = Module::$currentAlbum->delete();
         return "location:?currentPath=" . $album->path;
     }
 }

@@ -1,6 +1,13 @@
 Yii2 framework gallery extension
 =================
-Gallery etension for Yii2 framework with albums, images, extra info and tools for each image
+Gallery extension for Yii2 framework with albums, images, extra info and tools for each image
+
+Under hardcoding.
+
+2do
+ - setters/getters for array galleries
+ - add view templates
+ - 
 
 Installation
 ------------

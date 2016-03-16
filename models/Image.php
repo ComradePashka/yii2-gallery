@@ -8,17 +8,20 @@
 
 namespace comradepashka\gallery\models;
 
-use comradepashka\gallery\Module;
 use Yii;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
+use yii\imagine\Image as YiiImage;
+
+
+use comradepashka\gallery\Module;
+
 
 /**
  * Class Image
  * @package comradepashka\gallery\models
  * @property string $path
  */
-
 class Image extends ActiveRecord
 {
     const STATE_EMPTY = 1;
@@ -31,6 +34,7 @@ class Image extends ActiveRecord
     const THUMBS_ALL = 3;
 
     private $_gallery;
+
 //    private $_webRootPath;
 
     public static function tableName()
@@ -57,6 +61,7 @@ class Image extends ActiveRecord
             ]
         ]);
     }
+
     public function getGallery()
     {
         if (!$this->_gallery) {
@@ -64,18 +69,17 @@ class Image extends ActiveRecord
         }
         return $this->_gallery;
     }
-    public function setGallery($gallery) {
+
+    public function setGallery($gallery)
+    {
         $this->_gallery = $gallery;
     }
 
-    public function getWebRoot()
-    {
-        return preg_replace($this->gallery->RootPath, "", $this->path);
-    }
     public function getWebRootPath()
     {
         return $this->path;
     }
+
     public function setWebRootPath($path)
     {
         if ($tmpImage = Image::findOne(['path' => $path])) {
@@ -86,16 +90,24 @@ class Image extends ActiveRecord
 
     public function getRootPath()
     {
-        return $this->gallery->RootPath . $this->path;
+        return Module::$gallery->RootPath . $this->path;
     }
+
     public function getName()
     {
         return preg_replace("/[^\/]*\//", "", $this->path);
     }
+
+    public function getParentPath()
+    {
+        return str_replace(Module::$gallery->WebRoot, "", preg_replace("/[^\/]*$/", "", $this->path));
+    }
+
     public function getShortFileName($length = 18, $suffix = "...")
     {
         return substr($fn = $this->Name, 0, $length) . ((strlen($fn) > $length) ? $suffix : "");
     }
+
     public function getState()
     {
         if (!$this->path) return Image::STATE_EMPTY;
@@ -104,30 +116,33 @@ class Image extends ActiveRecord
         return Image::STATE_NORMAL;
     }
 
-    /*
-
-    public function getRootParentPath()
+    public function beforeSave($insert)
     {
-        return $this->gallery->Root . $this->ParentPath;
+        if (parent::beforeSave($insert)) {
+            yii::trace('saving: ' . $this->path, 'SAV');
+            $this->saveVersions();
+            return true;
+        } else {
+            return false;
+        }
     }
-    public function getWebRootParentPath()
+    public function beforeDelete()
     {
-        return $this->gallery->WebRoot . $this->ParentPath;
+        if (parent::beforeDelete()) {
+            yii::trace('deleting: ' . $this->path, 'DEL');
+            $this->removeVersions();
+            return true;
+        } else {
+            return false;
+        }
     }
-    public function getParentPath()
-    {
-        return preg_replace("/[^\/]+\/$/", "", $this->path);
-    }
-
-    $images = Image::find()->where(['rlike', 'path', "^{$path}[^/]+$"])->all();
     public function saveVersions()
     {
-//        $imagine = new \Imagine\Imagick\Imagine();
-        $imagine = YIImage::getImagine();
-        $newImage = $imagine->open($this->getPath());
+        $imagine = YiiImage::getImagine();
+        $newImage = $imagine->open($this->RootPath);
 
-        foreach ($this->versions as $k => $v) {
-            $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1-$k.\\3", $this->getPath());
+        foreach (Module::$gallery->versions as $k => $v) {
+            $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1-$k.\\3", $this->RootPath);
             if (file_exists($fn)) {
             } else {
                 $v($newImage)->save($fn);
@@ -136,23 +151,28 @@ class Image extends ActiveRecord
     }
     public function removeVersions($version = "ALL")
     {
-        foreach ($this->versions as $k => $v) {
+        foreach (Module::$gallery->versions as $k => $v) {
             if ($k == $version || $version == "ALL") {
-                $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1-$k.\\3", $this->getPath());
+                $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1-$k.\\3", $this->RootPath);
                 if (file_exists($fn)) {
                     unlink($fn);
                 }
             }
         }
-        if (file_exists($this->getPath())) {
-            unlink($this->getPath());
+        if (file_exists($this->RootPath)) {
+            unlink($this->RootPath);
         }
     }
+/*
+
+    $images = Image::find()->where(['rlike', 'path', "^{$path}[^/]+$"])->all();
+
 */
     public function getImageAuthors()
     {
         return $this->hasMany(ImageAuthor::className(), ['image_id' => 'id']);
     }
+
     public function getImageSEO()
     {
         return $this->hasMany(ImageSeo::className(), ['image_id' => 'id']);

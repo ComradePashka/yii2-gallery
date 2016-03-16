@@ -13,4 +13,9 @@ class ToolsAsset extends AssetBundle
         'ajax-modal-popup.js',
         'pjax-config.js'
     ];
+    public $depends = [
+        'yii\web\YiiAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
+        'yii\bootstrap\BootstrapThemeAsset',
+    ];
 }

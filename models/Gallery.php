@@ -15,8 +15,8 @@ class Gallery extends Model
 {
     public $name;
     public $module;
-    public $rootAlbum;
-    private $_currentPath;
+//    public $rootAlbum;
+//    private $_currentPath;
     private $_rootPath;
     private $_webRoot;
     private $_placeholder;
@@ -26,8 +26,8 @@ class Gallery extends Model
 
     public function init(){
         parent::init();
-        $this->_currentPath = '/';
-        $this->rootAlbum = new Album(['path' => '/', 'gallery' => $this]);
+//        $this->_currentPath = '/';
+//        $this->rootAlbum = new Album(['path' => '/', 'gallery' => $this]);
     }
     public function setRootPath($path)
     {
