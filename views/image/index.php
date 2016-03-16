@@ -2,99 +2,32 @@
 /**
  * Created by PhpStorm.
  * User: John
- * Date: 3/11/2016
- * Time: 1:21 AM
+ * Date: 3/15/2016
+ * Time: 6:43 PM
  */
+use yii\helpers\Url;
+use yii\widgets\Pjax;
+//use yii\bootstrap\Modal;
+use yii\helpers\Html;
+//use yii\web\JsExpression;
 
 use comradepashka\gallery\models\Album;
 use comradepashka\gallery\models\Image;
 use comradepashka\gallery\Module;
-use yii\helpers\Html;
-
-use yii\helpers\Url;
-use yii\widgets\Pjax;
-use yii\web\JsExpression;
-
 
 use kartik\icons\Icon;
-use execut\widget\TreeView;
+//use execut\widget\TreeView;
 use devgroup\dropzone\DropZone;
 
-/** @var Module $module */
-
-$this->registerJs("
-    $('document').ready(function(){
-        $('#pjax-albums').on('pjax:end', function(event, xhr, opt) {
-            if (matches = opt.url.match(/\?currentPath=\/(&|$)/)) $('.btn-target').addClass('disabled');
-            else $('.btn-target').removeClass('disabled');
-            $.pjax({container: '#pjax-images', url: opt.url});
-        });
-    });
-    ");
-
 $module = Module::getInstance();
-
 $album = $module->galleries[$gallery]->rootAlbum;
-$album->gallery->currentPath = $currentPath;
-$tree = $album->Tree;
 
-//////////////////////////////////////////////////////
-// Directory toolbox
-//
-Pjax::begin([
-    'id' => 'pjax-albums',
-    'options' => ['class' => 'col-xs-2'],
-]);
-
-echo "<div>Gallery: $gallery</div>" .
-    Html::tag("div",
-    Html::a(Icon::show('createfolder', [], Icon::WHHG), ['create', 'currentPath' => $currentPath], [
-        'id' => 'btnAlbumNew', 'class' => 'showModalButton btn btn-default', 'data-modal-pjax-callback-container' => '#pjax-albums'
-    ]) .
-    Html::a(Icon::show('systemfolder', [], Icon::WHHG), ['update', 'currentPath' => $currentPath], [
-        'id' => 'btnAlbumEdit', 'class' => 'showModalButton btn btn-default btn-target disabled', 'data-modal-pjax-callback-container' => '#pjax-albums'
-    ]) .
-    Html::a(Icon::show('deletefolder', [], Icon::WHHG), ['delete', 'currentPath' => $currentPath], [
-        'id' => 'btnAlbumDel', 'class' => 'showModalButton btn btn-danger btn-target disabled', 'data-modal-pjax-callback-container' => '#pjax-albums'
-    ])
-    , ['class' => 'dirtoolbox btn-group btn-group-sm']);
-
-//////////////////////////////////////////////////////
-// Directory treeview
-//
-
-echo TreeView::widget([
-    'id' => 'albums',
-    'data' => [$tree],
-    'template' => TreeView::TEMPLATE_SIMPLE,
-    'size' => TreeView::SIZE_SMALL,
-    'clientOptions' => [
-        'levels' => 5,
-        'showIcon' => true,
-        'expandIcon' => 'glyphicon glyphicon-folder-close',
-        'collapseIcon' => 'glyphicon glyphicon-folder-open',
-        'onNodeSelected' => new JsExpression("function (event, item) {
-            $.pjax({
-                container: '#pjax-albums',
-                url: location.pathname + '?currentPath=' + item.data,
-            });
-        }")
-    ],
-]);
-Pjax::end();
-
-//////////////////////////////////////////////////////
-// Image list for current folder
-//
 Pjax::begin([
     'id' => 'pjax-images',
-    'options' => ['class' => 'col-xs-10'],
+    'options' => ['class' => 'col-xs-12'],
 ]);
 
-//->with('imageSeo','imageExtra','imageAuthors')->all();
-
 $images = $album->find($currentPath)->images;
-
 echo "<div>Path: $currentPath</div>" .
     Html::tag("div",
         Html::a("Some buttons", ['create', 'currentPath' => $currentPath], [
@@ -173,15 +106,14 @@ foreach ($images as $i) {
 }
 
 echo Html::tag("div", $row, ['class' => 'row']);
-Pjax::end();
 
 //////////////////////////////////////////////////////
 // Dropzone for file uploading
 //
+
 echo DropZone::widget([
     'url' => Url::to(["image/upload", 'currentPath' => $currentPath, 'gallery' => $album->gallery->name]),
     'name' => 'file',
-    'htmlOptions' => ['class' => 'col-xs-12'],
     'options' => [
         'maxFilesize' => '8',
     ],
@@ -198,5 +130,4 @@ echo DropZone::widget([
         'removedfile' => "function(file){console.log(file.name + ' is removed. Queue: ' + this.getUploadingFiles().length)}"
     ],
 ]);
-
-?>
+Pjax::end();

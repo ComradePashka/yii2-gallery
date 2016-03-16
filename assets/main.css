@@ -1,0 +1,6 @@
+.dropZone:hover { border: dashed }
+.thumb { height: 128px !important; width: 128px }
+.dirtoolbox { padding-bottom: 4px }
+.toolbox { opacity: 0.3; padding: 2px !important }
+.toolbox small { opacity: 1 !important }
+.toolbox:hover { opacity: 1 }

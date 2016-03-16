@@ -13,72 +13,58 @@ use yii\base\Model;
 
 class Gallery extends Model
 {
+    public $name;
     public $module;
     public $rootAlbum;
     private $_currentPath;
-    private $_root;
+    private $_rootPath;
     private $_webRoot;
     private $_placeholder;
     private $_extensions;
     private $_versions;
     private $_versionRegexp;
 
-/*
-    public static function setGalleryConfig($config)
-    {
-        $this->setRoot($config['root']);
-        $this->setWebRoot($config['webRoot']);
-        $this->setGalleryPlaceholder($config['placeholder']);
-        $this->setGalleryExtensions($config['extensions']);
-        $this->setGalleryVersions($config['versions']);
-    }
-*/
     public function init(){
         parent::init();
         $this->_currentPath = '/';
         $this->rootAlbum = new Album(['path' => '/', 'gallery' => $this]);
     }
-
-    public function setRoot($path)
+    public function setRootPath($path)
     {
-        $this->_root = yii::getAlias($path);
+        $this->_rootPath = yii::getAlias($path . $this->_webRoot);
     }
-
-    public function getRoot()
+    public function getRootPath()
     {
-        return $this->_root;
+        return $this->_rootPath;
     }
-
     public function setWebRoot($path)
     {
         $this->_webRoot = $path;
     }
-
     public function getWebRoot()
     {
         return $this->_webRoot;
     }
-
+    public function getWebRootPath()
+    {
+        return $this->_rootPath . $this->_webRoot;
+    }
     public function setPlaceholder($path)
     {
-        $this->_placeholder = $this->getWebRoot() . $path;
+        $this->_placeholder = $this->WebRoot . $path;
     }
-
     public function getPlaceholder()
     {
         return $this->_placeholder;
     }
-
     public function setExtensions($extensions)
     {
         $this->_extensions = $extensions;
     }
-
     public function getExtensions()
     {
         return $this->_extensions;
     }
-
     public function setVersions($versions)
     {
         $this->_versions = $versions;
@@ -88,37 +74,27 @@ class Gallery extends Model
         }
         $this->_versionRegexp = preg_replace("/\|$/", ")\./i", $this->_versionRegexp);
     }
-
     public function getVersions()
     {
         return $this->_versions;
     }
-    /**
-     * @return mixed
-     */
     public function getVersionRegexp()
     {
         return $this->_versionRegexp;
     }
-    /**
-     * @return mixed
-     */
+
     public function getCurrentPath()
     {
         return $this->_currentPath;
     }
-    /**
-     * @param mixed $currentPath
-     */
     public function setCurrentPath($currentPath)
     {
-        if (is_dir($this->_root . $currentPath)) {
+        if (is_dir($this->WebRootPath . $currentPath)) {
             $this->_currentPath = $currentPath;
         } else {
             $this->_currentPath = "SOME ERROR! cp was: $currentPath";
         }
     }
-
     public function getCurrentAlbum()
     {
         return $this->rootAlbum->find($this->_currentPath);

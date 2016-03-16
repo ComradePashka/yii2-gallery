@@ -12,8 +12,6 @@ use yii\helpers\Html;
 $module = Module::getInstance();
 
 echo "test!";
-asdf
-exit;
 
 foreach ($module->galleries as $galleryName => $gallery) {
     ?>
@@ -24,7 +22,7 @@ foreach ($module->galleries as $galleryName => $gallery) {
                 <table class='table table-condensed'>
                     <tr>
                         <td><b>Root: </b></td>
-                        <td><?= $gallery['root'] ?></td>
+                        <td><?= $gallery['rootPath'] ?></td>
                     </tr>
                     <tr>
                         <td><b>Web Root: </b></td>

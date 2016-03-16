@@ -8,9 +8,12 @@
 
 namespace comradepashka\gallery\controllers;
 
+use comradepashka\gallery\models\Image;
 use Yii;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\UploadedFile;
+use yii\filters\VerbFilter;
 
 class ImageController extends Controller
 {
@@ -26,37 +29,32 @@ class ImageController extends Controller
             ],
         ];
     }
-
-    public function actionIndex()
+    public function actionIndex($gallery = 'default', $currentPath = '/')
     {
-        return $this->render('index');
+        return $this->render('index', ['gallery' => $gallery, 'currentPath' => $currentPath]);
     }
-
-    public function actionUpload($currentPath)
+    public function actionUpload($gallery = 'default', $currentPath = '/')
     {
         $fileName = 'file';
         if (isset($_FILES[$fileName])) {
             $file = UploadedFile::getInstanceByName($fileName);
-            if ($file->saveAs($this->gallery . $currentPath . $file->name)) {
-                //Now save file data to database
-                Yii::info('Saving model: ' . $path . $file->name, 'images');
-                $image = new Image();
-                $image->path = $path . $file->name;
-                $image->saveVersions();
-                $image->save();
-                echo Json::encode($file);
+            $path = $this->module->galleries[$gallery]->WebRootPath . $currentPath . $file->name;
+            $webPath =  $this->module->galleries[$gallery]->WebRoot . $currentPath . $file->name;
+            if ($file->saveAs($path)) {
+//                $image->saveVersions();
+                $image = new Image(['webrootpath' => $webPath, 'gallery' => $this->module->galleries[$gallery]]);
+                if ($image->isNewRecord) $image->save(); else $image->update();
+                return Json::encode($file);
             }
         }
-        return false;
+        return "???";
     }
-
     public function actionView($id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
-
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
@@ -65,8 +63,6 @@ class ImageController extends Controller
         $model->delete();
         return $this->render('index', ['path' => $path]);
     }
-
-
     public function actionSaveVersions($id)
     {
         $model = $this->findModel($id);
@@ -75,7 +71,6 @@ class ImageController extends Controller
         Yii::info('Saving versions for: ' . $path, 'images');
         return $this->render('index', ['path' => $path]) . "PATH:: $path";
     }
-
     protected function findModel($id)
     {
         if (($model = Image::findOne($id)) !== null) {

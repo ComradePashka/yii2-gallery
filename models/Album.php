@@ -24,17 +24,17 @@ class Album extends Model
     public $gallery;
     public $path;
 
-    public function getRootPath()
-    {
-        return $this->gallery->getRoot() . $this->path;
-    }
-    public function getWebRootPath()
-    {
-        return $this->gallery->getWebRoot() . $this->path;
-    }
     public function getParentPath()
     {
         return preg_replace("/[^\/]+\/$/", "", $this->path);
+    }
+    public function getWebRootPath()
+    {
+        return $this->gallery->WebRootPath . $this->path;
+    }
+    public function getWebRoot()
+    {
+        return $this->gallery->WebRoot . $this->path;
     }
     public function getName()
     {
@@ -42,16 +42,15 @@ class Album extends Model
     }
     public function create($name)
     {
-        if (@mkdir($this->RootPath . $name)) return new Album(['path' => $this->path . $name . "/", 'gallery' => $this->gallery]);
+        if (@mkdir($this->WebRootPath . $name)) return new Album(['path' => $this->path . $name . "/", 'gallery' => $this->gallery]);
         else {
-            $this->addError("path", "Can not create album: $name");
+            $this->addError("path", "Can not create album: " . $this->WebRootPath . $name);
             return $this;
         }
     }
     public function update($newname)
     {
-        if (@rename($this->RootPath, dirname($this->RootPath) . "/" . $newname)) {
-//            $this->path = preg_replace("/([^\/]+)\/$/", "$newname/", $this->path);
+        if (@rename($this->WebRootPath, dirname($this->WebRootPath) . "/" . $newname)) {
             $this->path = $this->ParentPath . $newname . "/";
         }
         else {
@@ -61,7 +60,7 @@ class Album extends Model
     }
     public function delete()
     {
-        if (!@rmdir($this->RootPath)) {
+        if (!@rmdir($this->WebRootPath)) {
             $this->addError("path", "Can not delete album: $this->Name");
         }
         $this->path = $this->ParentPath;
@@ -79,10 +78,10 @@ class Album extends Model
     public function getAlbums()
     {
         $albums = [];
-        $h = opendir($this->RootPath);
+        $h = opendir($this->WebRootPath);
         while (false !== ($entry = readdir($h))) {
             if ($entry != "." && $entry != "..") {
-                if (is_dir($this->RootPath . $entry)) {
+                if (is_dir($this->WebRootPath . $entry)) {
                     $albums[] = new Album(['path' => $this->path . $entry . "/", 'gallery' => $this->gallery]);
                 }
             }
@@ -93,11 +92,12 @@ class Album extends Model
     public function getImages()
     {
         $images = [];
-        $h = opendir($this->RootPath);
+        $h = opendir($this->WebRootPath);
         while (false !== ($entry = readdir($h))) {
             if ($entry != "." && $entry != "..") {
-                if (is_file($this->RootPath . $entry) && preg_match($this->gallery->extensions, $entry) && !preg_match($this->gallery->versionRegexp, $entry)) {
-                    $images[] = new Image(['path' => $this->WebRootPath . $entry, 'gallery' => $this->gallery]);
+                if (is_file($this->WebRootPath . $entry) && preg_match($this->gallery->extensions, $entry) && !preg_match($this->gallery->versionRegexp, $entry)) {
+                    $path = $this->WebRoot . $entry;
+                    $images[] = new Image(['webrootpath' => $path, 'gallery' => $this->gallery]);
                 }
             }
         }

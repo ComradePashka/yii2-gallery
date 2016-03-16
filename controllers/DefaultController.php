@@ -19,4 +19,13 @@ class DefaultController extends Controller
         if (count($galleries) == 1 && isset($galleries['default'])) return $this->redirect(['album/']);
         else return $this->render('index');
     }
+
+    public function actionGalleryList()
+    {
+        return $this->render('index');
+    }
+    public function actionGalleryList2()
+    {
+        return $this->renderPartial('index');
+    }
 }

@@ -8,6 +8,8 @@
 
 namespace comradepashka\gallery\models;
 
+use comradepashka\gallery\Module;
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
@@ -28,7 +30,8 @@ class Image extends ActiveRecord
     const THUMBS_PARTIAL = 2;
     const THUMBS_ALL = 3;
 
-    public $gallery;
+    private $_gallery;
+//    private $_webRootPath;
 
     public static function tableName()
     {
@@ -54,20 +57,36 @@ class Image extends ActiveRecord
             ]
         ]);
     }
-
-    public function setPath($path)
+    public function getGallery()
     {
-        if ($tmpImage = Image::find()->where(['path' => $path])) {
-
-            $this->attributes = $tmpImage;
-        } else
-
-        $this->path = $path;
+        if (!$this->_gallery) {
+            $this->_gallery = Module::getInstance()->galleries['default'];
+        }
+        return $this->_gallery;
+    }
+    public function setGallery($gallery) {
+        $this->_gallery = $gallery;
     }
 
-    public function getParentPath()
+    public function getWebRoot()
     {
-        return preg_replace("/[^\/]+\/$/", "", $this->path);
+        return preg_replace($this->gallery->RootPath, "", $this->path);
+    }
+    public function getWebRootPath()
+    {
+        return $this->path;
+    }
+    public function setWebRootPath($path)
+    {
+        if ($tmpImage = Image::findOne(['path' => $path])) {
+            $this->setAttributes($tmpImage->attributes, false);
+            $this->isNewRecord = false;
+        } else $this->path = $path;
+    }
+
+    public function getRootPath()
+    {
+        return $this->gallery->RootPath . $this->path;
     }
     public function getName()
     {
@@ -81,15 +100,26 @@ class Image extends ActiveRecord
     {
         if (!$this->path) return Image::STATE_EMPTY;
         if ($this->isNewRecord) return Image::STATE_UNSAVED;
-        if (!file_exists($this->path)) return Image::STATE_BROKEN;
+        if (!file_exists($this->RootPath)) return Image::STATE_BROKEN;
         return Image::STATE_NORMAL;
     }
 
     /*
-     *
+
+    public function getRootParentPath()
+    {
+        return $this->gallery->Root . $this->ParentPath;
+    }
+    public function getWebRootParentPath()
+    {
+        return $this->gallery->WebRoot . $this->ParentPath;
+    }
+    public function getParentPath()
+    {
+        return preg_replace("/[^\/]+\/$/", "", $this->path);
+    }
+
     $images = Image::find()->where(['rlike', 'path', "^{$path}[^/]+$"])->all();
-
-
     public function saveVersions()
     {
 //        $imagine = new \Imagine\Imagick\Imagine();
@@ -104,7 +134,6 @@ class Image extends ActiveRecord
             }
         }
     }
-
     public function removeVersions($version = "ALL")
     {
         foreach ($this->versions as $k => $v) {
@@ -119,9 +148,7 @@ class Image extends ActiveRecord
             unlink($this->getPath());
         }
     }
-
-     */
-
+*/
     public function getImageAuthors()
     {
         return $this->hasMany(ImageAuthor::className(), ['image_id' => 'id']);
@@ -130,5 +157,4 @@ class Image extends ActiveRecord
     {
         return $this->hasMany(ImageSeo::className(), ['image_id' => 'id']);
     }
-
 }
