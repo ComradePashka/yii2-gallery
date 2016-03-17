@@ -14,10 +14,6 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/pid/speakingurl.git"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/ComradePashka/yii2-ajaxable.git"
         }
     ],
@@ -25,7 +21,7 @@
         "yiisoft/yii2": "*",
         "execut/yii2-widget-bootstraptreeview": "*",
         "devgroup/yii2-dropzone": "*",
-        "comradepashka/yii2-ajaxable": "*"
+        "comradepashka/yii2-ajaxable": "dev-master"
     },
     "autoload": {
         "psr-4": {
