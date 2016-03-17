@@ -1,5 +1,6 @@
 {
     "name": "comradepashka/yii2-gallery",
+    "version": "0.0.1",
     "description": "Gallery extension for Yii2 framework with albums, images, extra info and tools for each image",
     "type": "yii2-extension",
     "keywords": ["yii2","extension","gallery","images"],
