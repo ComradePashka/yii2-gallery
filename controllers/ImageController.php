@@ -10,6 +10,7 @@ namespace comradepashka\gallery\controllers;
 
 use comradepashka\gallery\models\Image;
 use comradepashka\gallery\Module;
+use comradepashka\ajaxable\AjaxableBehaviour;
 use Yii;
 use yii\helpers\Json;
 use yii\web\Controller;
@@ -19,6 +20,12 @@ use yii\web\UploadedFile;
 class ImageController extends Controller
 {
     public $album;
+
+    public function behaviors() {
+        return [
+            'class' => AjaxableBehaviour::class
+        ];
+    }
 
     public function actionIndex()
     {

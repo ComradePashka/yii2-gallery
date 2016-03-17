@@ -138,9 +138,17 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 ]
             ];
         if (!$this->layout) $this->layout = 'main';
+/*
         $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app) {
             $app->getView()->on(View::EVENT_END_BODY, [$this, 'registerToolsAsset']);
         });
+*/
+
+/*
+        $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app) {
+            $app->getView()->on(View::EVENT_END_BODY, [$this, 'registerToolsAsset']);
+        });
+*/
     }
     public function beforeAction($action)
     {
@@ -160,11 +168,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
         self::checkConfig(yii::$app->request->queryParams);
         self::$currentAlbum->path = self::$currentPath;
         return true;
-    }
-    public function registerToolsAsset($event)
-    {
-        $view = $event->sender;
-        ToolsAsset::register($view);
     }
     public function init()
     {
