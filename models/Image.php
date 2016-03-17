@@ -119,7 +119,6 @@ class Image extends ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            yii::trace('saving: ' . $this->path, 'SAV');
             $this->saveVersions();
             return true;
         } else {
@@ -129,7 +128,6 @@ class Image extends ActiveRecord
     public function beforeDelete()
     {
         if (parent::beforeDelete()) {
-            yii::trace('deleting: ' . $this->path, 'DEL');
             $this->removeVersions();
             return true;
         } else {

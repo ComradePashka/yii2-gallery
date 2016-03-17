@@ -14,34 +14,32 @@ use comradepashka\gallery\Module;
 
 class AlbumController extends Controller
 {
-//$gallery = 'default', $currentPath = '/'
     public function actionIndex()
     {
-//        return $this->render('index', ['gallery' => $gallery, 'currentPath' => $currentPath]);
         return $this->render('index');
     }
-    public function actionCreate()
+    public function actionCreate($name=null)
     {
-        if ($name = yii::$app->request->post('name')) {
+        if ($name) {
             $album = Module::$currentAlbum->create($name);
             if (!$album->hasErrors()){
                 return "location:?currentPath=" . $album->path;
             } else {
-                return "error: " . $album->getFirstError("path");
+                return "error:" . $album->getFirstError("path");
             }
         } else {
             return $this->renderAjax('create');
         }
     }
-    public function actionUpdate()
+    public function actionUpdate($name=null)
     {
         $album = Module::$currentAlbum;
-        if ($name = yii::$app->request->post('name')) {
+        if ($name) {
             $album->update($name);
             if (!$album->hasErrors()){
                 return "location:?currentPath=" . $album->path;
             } else {
-                return "error: " . $album->getFirstError("path");
+                return "error:" . $album->getFirstError("path");
             }
         } else {
             return $this->renderAjax('update');

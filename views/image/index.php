@@ -84,7 +84,7 @@ foreach ($images as $i) {
     <div class='text-center'><small>{$state} -> {$i->ParentPath}</small></div>
     <div class='caption text-center toolbox'>" .
         Html::tag('div',
-            Html::a(Icon::show('edit', [], Icon::WHHG), ['image/seo', 'id' => $i->id], [
+            Html::a(Icon::show('edit', [], Icon::WHHG), ['image-seo/index', 'image_id' => $i->id], [
                 'class' => $btnImageSEO, 'data-modal-pjax-callback-container' => '#pjax-images']) .
             Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['image/extra', 'id' => $i->id], [
                 'class' => $btnImageExtra, 'data-modal-pjax-callback-container' => '#pjax-images']) .

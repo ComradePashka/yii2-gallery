@@ -1,6 +1,6 @@
 {
     "name": "comradepashka/yii2-gallery",
-    "description": "Gallery etension for Yii2 framework with albums, images, extra info and tools for each image",
+    "description": "Gallery extension for Yii2 framework with albums, images, extra info and tools for each image",
     "type": "yii2-extension",
     "keywords": ["yii2","extension","gallery","images"],
     "license": "Apache-2.0",
@@ -10,10 +10,17 @@
             "email": "comradepashka@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pid/speakingurl.git"
+        }
+    ],
     "require": {
         "yiisoft/yii2": "*",
         "execut/yii2-widget-bootstraptreeview": "*",
         "devgroup/yii2-dropzone": "*"
+        "comradepashka/ajaxable": "*"
     },
     "autoload": {
         "psr-4": {

@@ -152,7 +152,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
             $config['module'] = $this;
             self::$galleries[$id] = Yii::createObject($config);
         }
-        yii::trace("POST: " . json_encode(yii::$app->request->queryParams), "GETTER");
         self::$gallery = self::$galleries['default'];
         self::$rootAlbum = new Album();
         self::$rootAlbum->path = '/';
@@ -160,8 +159,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
         self::$currentPath = '/';
         self::checkConfig(yii::$app->request->queryParams);
         self::$currentAlbum->path = self::$currentPath;
-        yii::trace("cp: " . self::$currentPath . " g: " . self::$gallery->name .
-            " ca: " . json_encode(self::$currentAlbum->Tree), "BEFORA!");
         return true;
     }
     public function registerToolsAsset($event)

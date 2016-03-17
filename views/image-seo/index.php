@@ -7,9 +7,17 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Image Seos';
-$this->params['breadcrumbs'][] = $this->title;
-echo GridView::widget([
+$extClass = "";
+if (yii::$app->request->isAjax) {
+    $extClass = "showModalButton";
+/*
+foreach ($image->imageSEO as $seo) { echo json_encode($seo->attributes) . "<br />"; }
+*/
+}
+
+    $this->title = 'Image Seos';
+    $this->params['breadcrumbs'][] = $this->title;
+    echo GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
             'lang',
@@ -17,10 +25,11 @@ echo GridView::widget([
             'header',
             'keywords',
             'description',
-            [ 'class' => 'yii\grid\ActionColumn' ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'buttonOptions' => ['class' => $extClass],
+            ],
         ],
     ]);
-// Yii::$app->request->isAjax
-echo Html::a('+', ['create'], ['class' => 'btn btn-success']);
+    echo Html::a('+', ['create', 'image_id' => ], ['class' => 'btn btn-success' . (($extClass) ? " " . $extClass : "")]);
 ?>
-

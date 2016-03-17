@@ -14,74 +14,71 @@ use Yii;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\UploadedFile;
-use yii\filters\VerbFilter;
+
 
 class ImageController extends Controller
 {
     public $album;
-/*
- *
-     public function behaviors()
+
+    public function actionIndex()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => ['delete' => ['post'],],
-            ],
-        ];
+        return $this->render('index');
     }
 
- */
-    public function actionIndex($gallery = 'default', $currentPath = '/')
-    {
-        return $this->render('index', ['gallery' => $gallery, 'currentPath' => $currentPath]);
-//        return $this->render('index', ['gallery' => $gallery, 'currentPath' => $currentPath]);
-    }
-//    public function actionUpload($gallery = 'default', $currentPath = '/')
     public function actionUpload()
     {
         $fileName = 'file';
         if (isset($_FILES[$fileName])) {
             $file = UploadedFile::getInstanceByName($fileName);
             $path = Module::$gallery->WebRootPath . Module::$currentPath . $file->name;
-            $webPath =  Module::$gallery->WebRoot . Module::$currentPath . $file->name;
+            $webPath = Module::$gallery->WebRoot . Module::$currentPath . $file->name;
             if ($file->saveAs($path)) {
-//                $image->saveVersions();
                 $image = new Image(['webrootpath' => $webPath]);
                 if ($image->isNewRecord) $image->save(); else $image->update();
                 return Json::encode($file);
             }
         }
-        return "???";
+        return "?";
     }
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+
+    /*
+        public function actionView($id)
+        {
+            return $this->render('view', [
+                'model' => $this->findModel($id),
+            ]);
+        }
+    */
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
         $path = $model->ParentPath;
         $model->delete();
         return "location:?currentPath=" . $path;
-//        return $this->render('index', ['path' => $path]);
     }
 
     public function actionAdd($path)
     {
-        $model = new Image(['path' => $path]);
+        $model = new Image(['WebRootPath' => $path]);
         $model->save();
         return "location:?currentPath=" . $model->ParentPath;
     }
 
-
+/*
+    public function actionSeo($id)
+    {
+        if ($image = Image::findOne($id)) {
+            return $this->renderAjax('/image-seo/index', ['image' => $image]);
+        } else {
+            return "error:image($id) not found!";
+        }
+    }
+*/
     public function actionSaveVersions($id)
     {
         $model = $this->findModel($id);
         $model->saveVersions();
-        $path = $model->getFileDir();
+        $path = $model->ParentPath;
         Yii::info('Saving versions for: ' . $path, 'images');
         return $this->render('index', ['path' => $path]) . "PATH:: $path";
     }
@@ -92,7 +89,7 @@ class ImageController extends Controller
         $album = $this->module->galleries[$gallery]->rootAlbum->find($currentPath);
         if ($name = yii::$app->request->post('name')) {
             $album->update($name);
-            if (!$album->hasErrors()){
+            if (!$album->hasErrors()) {
                 return "location:?currentPath=" . $album->path;
             } else {
                 return "error: " . $album->getFirstError("path");

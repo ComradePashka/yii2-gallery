@@ -7,6 +7,7 @@ Under hardcoding.
 2do
  - setters/getters for array galleries
  - add view templates
+ - inject to authorized user profile to save settings or setup persistent values other way
  - 
 
 Installation
