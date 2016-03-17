@@ -25,7 +25,7 @@
         "yiisoft/yii2": "*",
         "execut/yii2-widget-bootstraptreeview": "*",
         "devgroup/yii2-dropzone": "*",
-        "comradepashka/ajaxable": "dev-master"
+        "comradepashka/yii2-ajaxable": "dev-master"
     },
     "autoload": {
         "psr-4": {
