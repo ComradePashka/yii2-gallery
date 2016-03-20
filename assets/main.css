@@ -1,0 +1,20 @@
+.dropZone:hover { border: dashed }
+.thumb { height: 128px !important }
+.dirtoolbox { padding-bottom: 4px }
+.toolbox {
+    opacity: 0.3;
+    padding: 2px !important;
+    -webkit-transition: 0.8s;
+    transition: .8s;
+}
+.toolbox small { opacity: 1 !important }
+.toolbox:hover {
+    opacity: 1;
+//    transform: scale(1.2);
+}
+.thumb-image:hover {
+    background: lightyellow
+}
+.thumb-image-active {
+    background: cornflowerblue;
+}

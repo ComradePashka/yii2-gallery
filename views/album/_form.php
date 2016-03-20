@@ -14,5 +14,5 @@ else echo "Add album for gallery: <b>" . Module::$gallery->name . "</b> into: " 
 
 echo Html::beginForm();
 echo Html::textInput('name', $name);
-echo Html::submitButton('Save!', ['class' => 'showModalButton']);
+echo Html::submitButton('Save!');
 echo Html::endForm();

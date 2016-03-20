@@ -5,17 +5,17 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\Modal;
-use frontend\assets\AppAsset;
+use comradepashka\gallery\Module;
 
 $this->beginContent('@app/views/layouts/main.php');
-AppAsset::register($this);
-
+//AppAsset::register($this);
+/*
 Modal::begin(['id' => 'popup-modal']);
 echo Html::tag("div", 'test', ['id' => 'popup-modal-content']);
 Modal::end();
-
-echo "<div class='row'>YO!</div>";
-echo $content;
+*/
+echo "<div class='row'>cp:" . Module::$currentPath . " a:" . Module::$currentAlbum->path . " id: " . Module::$currentImage->id . " plugin:" . Module::$imagePlugin . "</div>";
+echo "<div class='row'>$content</div>";
 
 $this->endContent();
 ?>

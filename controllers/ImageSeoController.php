@@ -33,11 +33,12 @@ class ImageSeoController extends Controller
     public function actionIndex($image_id = null)
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => $image_id ? ImageSeo::find()->andWhere(['image_id' => $image_id]) : ImageSeo::find(),
+            'query' => (($image_id != null) ? ImageSeo::find()->andWhere(['image_id' => $image_id]) : ImageSeo::find(0)),
         ]);
-        return Yii::$app->request->isAjax ?
-            $this->renderAjax('index', ['dataProvider' => $dataProvider]) :
-            $this->render('index', ['dataProvider' => $dataProvider]);
+        return $this->render('index', ['dataProvider' => $dataProvider, 'image_id' => $image_id]);
+//        return Yii::$app->request->isAjax ?
+//            $this->renderAjax('index', ['dataProvider' => $dataProvider]) :
+//            $this->render('index', ['dataProvider' => $dataProvider]);
     }
 
     /**
@@ -64,13 +65,11 @@ class ImageSeoController extends Controller
         if ($image_id) {
             $model->image_id = $image_id;
         }
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'image_id' => $model->image_id, 'lang' => $model->lang]);
         } else {
-            return Yii::$app->request->isAjax ?
-                $this->renderAjax('create', ['model' => $model]) :
-                $this->render('create', ['model' => $model]);
+            return $this->render('create', ['model' => $model]);
+//            return Yii::$app->request->isAjax ? $this->renderAjax('create', ['model' => $model]):$this->render('create', ['model' => $model]);
         }
     }
 

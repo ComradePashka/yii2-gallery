@@ -3,6 +3,7 @@ namespace comradepashka\gallery;
 
 use comradepashka\gallery\models\Album;
 use comradepashka\gallery\models\Gallery;
+use comradepashka\gallery\models\Image;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\web\Application;
@@ -32,6 +33,21 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public static $currentPath;
 
+    /**
+     * @var Image
+     */
+    public static $currentImage;
+
+    /**
+     * @var string
+     */
+    public static $imagePlugin;
+
+    /**
+     * @var string
+     */
+    public static $lastError;
+
     public $controllerNamespace = 'comradepashka\gallery\controllers';
 
     /**
@@ -39,11 +55,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public static function getGallery()
     {
-/*
-        if (!self::$gallery) {
-            self::$gallery = new Gallery();
-        }
-*/
+        /*
+                if (!self::$gallery) {
+                    self::$gallery = new Gallery();
+                }
+        */
         return self::$gallery;
     }
 
@@ -69,6 +85,38 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public static function setRootAlbum($rootAlbum)
     {
         self::$rootAlbum = $rootAlbum;
+    }
+
+    /**
+     * @return Image
+     */
+    public static function getCurrentImage()
+    {
+        return self::$currentImage;
+    }
+
+    /**
+     * @param Image $currentImage
+     */
+    public static function setCurrentImage($currentImage)
+    {
+        self::$currentImage = $currentImage;
+    }
+
+    /**
+     * @param string $imagePlugin
+     */
+    public static function setImagePlugin($imagePlugin)
+    {
+        self::$imagePlugin = $imagePlugin;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getImagePlugin()
+    {
+        return self::$imagePlugin;
     }
 
     /**
@@ -104,19 +152,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
         self::$currentAlbum = $currentAlbum;
     }
 
-    public static function checkConfig($post) {
-        foreach($post as $key => $val) {
-            switch($key) {
-                case "currentPath":
-                    self::$currentPath = $val;
-                    break;
-                case "gallery":
-                    self::$gallery = self::getGalleries($val);
-                    break;
-            }
-        }
-    }
-
     public function bootstrap($app)
     {
         if (!self::$galleries)
@@ -138,18 +173,46 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 ]
             ];
         if (!$this->layout) $this->layout = 'main';
-/*
-        $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app) {
-            $app->getView()->on(View::EVENT_END_BODY, [$this, 'registerToolsAsset']);
-        });
-*/
-
-/*
-        $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app) {
-            $app->getView()->on(View::EVENT_END_BODY, [$this, 'registerToolsAsset']);
-        });
-*/
     }
+
+    public function registerGalleryAsset($event)
+    {
+        /**
+         * @var View $view
+         */
+        if (Yii::$app->getRequest()->getIsAjax()) {
+            return;
+        }
+        $view = $event->sender;
+        yii::trace("GALERY MODULE id: " . $this->id);
+        yii::trace("GALERY MODULE handle END_BODY from: {$view->viewFile}");
+        GalleryAsset::register($view);
+    }
+
+    public static function checkConfig($post)
+    {
+        foreach ($post as $key => $val) {
+            switch ($key) {
+                case "currentPath":
+                    self::$currentPath = $val;
+                    break;
+                case "gallery":
+                    self::$gallery = self::getGalleries($val);
+                    break;
+                case "image_id":
+                    if ($image = Image::findOne($val)) {
+                        self::$currentImage = $image;
+                    };
+                    break;
+                case "imagePlugin" :
+                    if (preg_match("(seo|extra|authors)", $val)) {
+                        self::$imagePlugin = $val;
+                    }
+                    break;
+            }
+        }
+    }
+
     public function beforeAction($action)
     {
         if (!parent::beforeAction($action)) {
@@ -165,10 +228,14 @@ class Module extends \yii\base\Module implements BootstrapInterface
         self::$rootAlbum->path = '/';
         self::$currentAlbum = new Album();
         self::$currentPath = '/';
+        self::$currentImage = new Image();
         self::checkConfig(yii::$app->request->queryParams);
         self::$currentAlbum->path = self::$currentPath;
+        Yii::$app->getView()->on(View::EVENT_END_BODY, [$this, 'registerGalleryAsset']);
+
         return true;
     }
+
     public function init()
     {
         parent::init();

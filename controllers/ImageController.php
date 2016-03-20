@@ -9,9 +9,11 @@
 namespace comradepashka\gallery\controllers;
 
 use comradepashka\gallery\models\Image;
+use comradepashka\gallery\models\ImageSeo;
 use comradepashka\gallery\Module;
 use comradepashka\ajaxable\AjaxableBehaviour;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\UploadedFile;
@@ -23,13 +25,13 @@ class ImageController extends Controller
 
     public function behaviors() {
         return [
-            'class' => AjaxableBehaviour::class
+//            'class' => AjaxableBehaviour::class
         ];
     }
 
-    public function actionIndex()
+    public function actionIndex($image_id = null)
     {
-        return $this->render('index');
+        return $this->render('index', ['image_id' => $image_id]);
     }
 
     public function actionUpload()
@@ -61,26 +63,36 @@ class ImageController extends Controller
         $model = $this->findModel($id);
         $path = $model->ParentPath;
         $model->delete();
-        return "location:?currentPath=" . $path;
+        return $this->render('index', ['currentPath' => $path]);
+//        return "location:?currentPath=" . $path;
     }
 
     public function actionAdd($path)
     {
         $model = new Image(['WebRootPath' => $path]);
         $model->save();
-        return "location:?currentPath=" . $model->ParentPath;
+        return $this->render('index', ['currentPath' => $path]);
+//        return "location:?currentPath=" . $model->ParentPath;
     }
 
-/*
-    public function actionSeo($id)
+
+    public function actionSeo($image_id)
     {
-        if ($image = Image::findOne($id)) {
-            return $this->renderAjax('/image-seo/index', ['image' => $image]);
+/*
+        $dataProvider = new ActiveDataProvider([
+            'query' => $image_id ? ImageSeo::find()->andWhere(['image_id' => $image_id]) : ImageSeo::find(),
+        ]);
+        return $this->render('index', ['dataProvider' => $dataProvider, 'image_id' => $image_id]);
+*/
+        return $this->render('index', ['image_id' => $image_id]);
+/*
+        if ($image = Image::findOne($image_id)) {
+            return $this->renderAjax('/image-seo/index', ['image_id' => $image_id]);
         } else {
             return "error:image($id) not found!";
         }
-    }
 */
+    }
     public function actionSaveVersions($id)
     {
         $model = $this->findModel($id);

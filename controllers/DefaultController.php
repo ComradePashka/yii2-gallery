@@ -15,11 +15,6 @@ class DefaultController extends Controller
 {
     public function actionIndex()
     {
-/*
-        $galleries = $this->module->galleries;
-        if (count($galleries) == 1 && isset($galleries['default'])) return $this->redirect(['album/']);
-        else return $this->render('index');
- */
         if (count(Module::$galleries) == 1 && isset(Module::$galleries['default'])) return $this->redirect(['album/']);
         else return $this->render('index');
     }

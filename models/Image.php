@@ -21,6 +21,7 @@ use comradepashka\gallery\Module;
  * Class Image
  * @package comradepashka\gallery\models
  * @property string $path
+ * @property integer $id
  */
 class Image extends ActiveRecord
 {
