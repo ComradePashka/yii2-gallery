@@ -13,46 +13,13 @@ use yii\widgets\Pjax;
 use yii\helpers\Html;
 //use yii\web\JsExpression;
 
-use comradepashka\gallery\models\Album;
 use comradepashka\gallery\models\Image;
 use comradepashka\gallery\Module;
 
 use kartik\icons\Icon;
 use devgroup\dropzone\DropZone;
 
-Pjax::begin([
-    'id' => 'pjax-images',
-    'options' => ['class' => 'col-xs-12'],
-    'enablePushState' => false,
-]);
-
-$plugin = "";
-//if ( != "") {
-switch (Module::$imagePlugin) {
-    case "seo":
-        if (Module::$currentImage->id) {
-            $dataProvider = new ActiveDataProvider([
-                'query' => ImageSeo::find()->andWhere(['image_id' => Module::$currentImage->id]),
-//                'query' => Module::$currentImage->id ? ImageSeo::find()->andWhere(['image_id' => Module::$currentImage->id]) : ImageSeo::find(),
-            ]);
-            $plugin = $this->render("/image-" . Module::$imagePlugin . "/index", ['dataProvider' => $dataProvider, 'image_id' => $image_id]);
-        }
-        break;
-    case "extra":
-        break;
-    case "authors":
-        break;
-}
-//if (Module::$imagePlugin != "") $plugin = "<div class='row'>$plugin</div>";
-
-
-
-$images = Module::$currentAlbum->Images;
-//yii::trace("Current image:" . Module::$currentImage->path);
-
-echo "<div>Path: " . Module::$currentPath . " Plugin: " . Module::$imagePlugin . " cImagePath: " . Module::$currentImage->path . "</div>" .
-    $plugin .
-    Html::tag("div",
+echo Html::tag("div",
         Html::a("Some buttons", ['create', 'currentPath' => Module::$currentPath], [
             'id' => 'btnAlbum1', 'class' => 'btn btn-default', 'data-modal-pjax-callback-container' => '#pjax-albums'
         ]) .
@@ -62,9 +29,11 @@ echo "<div>Path: " . Module::$currentPath . " Plugin: " . Module::$imagePlugin .
         Html::a(Icon::show('deletefolder', [], Icon::WHHG), ['delete', 'currentPath' => Module::$currentPath], [
             'id' => 'btnAlbum3', 'class' => 'btn btn-default btn-target', 'data-modal-pjax-callback-container' => '#pjax-albums'
         ])
-        , ['class' => 'dirtoolbox btn-group btn-group-sm']);
+        , ['class' => 'btn-group btn-group-sm']);
 $n = 0;
 $row = "";
+
+$images = Module::getImages();
 
 foreach ($images as $i) {
     $allBtnClass = "btn";
@@ -78,15 +47,16 @@ foreach ($images as $i) {
     $btnImageDelete .= " btn-danger";
 
     $activeImage = "thumb-image";
+/*
     if ((Module::$currentImage->id) && (Module::$currentImage->id == $i->id)) {
         $activeImage .= " thumb-image-active";
     }
-
+*/
     $state = "";
     $buttonAddDel = "";
     switch ($i->State) {
         case Image::STATE_EMPTY:
-            $imageUrl = $i->gallery->Placeholder;
+            $imageUrl = Module::getGallery()->Placeholder;
             $state = "EMPTY";
             break;
         case Image::STATE_UNSAVED:
@@ -96,7 +66,7 @@ foreach ($images as $i) {
                 'class' => $btnImageAdd, 'data-modal-pjax-callback-container' => '#pjax-images']);
             break;
         case Image::STATE_BROKEN:
-            $imageUrl = $i->gallery->Placeholder;
+            $imageUrl = Module::getGallery()->Placeholder;
             $state = "BROKEN";
             break;
         default:
@@ -112,8 +82,6 @@ foreach ($images as $i) {
 <div class='col-xs-2'>
 <div class='thumbnail {$activeImage}'>
     <a href='#' title='{$i->Name}'><img src='{$imageUrl}' class='thumb' /></a>
-    <div class='text-center'><small>{$i->ShortFileName}</small></div>
-    <div class='text-center'><small>{$state} -> {$i->ParentPath}</small></div>
     <div class='caption text-center toolbox'>" .
         Html::tag('div',
             Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'], [
@@ -137,14 +105,14 @@ foreach ($images as $i) {
 }
 
 echo Html::tag("div", $row, ['class' => 'row']);
-Pjax::end();
+
 
 //////////////////////////////////////////////////////
 // Dropzone for file uploading
 //
 
 echo DropZone::widget([
-    'url' => Url::to(["image/upload", 'currentPath' => Module::$currentPath, 'gallery' => Module::$gallery->name]),
+    'url' => Url::to(["image/upload", 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]),
     'name' => 'file',
     'htmlOptions' => ['class' => 'col-xs-12'],
     'options' => [

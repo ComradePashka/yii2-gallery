@@ -29,9 +29,9 @@ class ImageController extends Controller
         ];
     }
 
-    public function actionIndex($image_id = null)
+    public function actionIndex()
     {
-        return $this->render('index', ['image_id' => $image_id]);
+        return $this->render('index');
     }
 
     public function actionUpload()

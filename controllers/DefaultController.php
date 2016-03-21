@@ -15,17 +15,18 @@ class DefaultController extends Controller
 {
     public function actionIndex()
     {
-        if (count(Module::$galleries) == 1 && isset(Module::$galleries['default'])) return $this->redirect(['album/']);
-        else return $this->render('index');
+//        if ((count(Module::$_galleries) == 1) && (Module::$galleryName == 'default')) return $this->redirect(['album/']);
+//        else return $this->render('index');
+        return $this->render('index');
+    }
+
+    public function actionView()
+    {
+        return $this->render('view');
     }
 
     public function actionTest()
     {
         return $this->render('test.twig');
-    }
-    public function actionGalleryList2($gallery = 'default')
-    {
-        Module::$gallery = Module::$galleries[$gallery];
-        return $this->renderPartial('index');
     }
 }

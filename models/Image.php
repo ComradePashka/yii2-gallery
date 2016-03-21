@@ -34,10 +34,6 @@ class Image extends ActiveRecord
     const THUMBS_PARTIAL = 2;
     const THUMBS_ALL = 3;
 
-    private $_gallery;
-
-//    private $_webRootPath;
-
     public static function tableName()
     {
         return 'image';
@@ -63,17 +59,28 @@ class Image extends ActiveRecord
         ]);
     }
 
-    public function getGallery()
-    {
-        if (!$this->_gallery) {
-            $this->_gallery = Module::getInstance()->galleries['default'];
+    /*
+     * cloning routine. as sample of hack
+        public function setWebRootPath($path)
+        {
+            if ($tmpImage = Image::findOne(['path' => $path])) {
+                $this->setAttributes($tmpImage->attributes, false);
+                $this->isNewRecord = false;
+            } else $this->path = $path;
         }
-        return $this->_gallery;
-    }
+        public function getParentPath()
+        {
+            return str_replace(Module::$gallery->WebRoot, "", preg_replace("/[^\/]*$/", "", $this->path));
+        }
+        public function getShortFileName($length = 18, $suffix = "...")
+        {
+            return substr($fn = $this->Name, 0, $length) . ((strlen($fn) > $length) ? $suffix : "");
+        }
 
-    public function setGallery($gallery)
+    */
+    public function getRootPath()
     {
-        $this->_gallery = $gallery;
+        return Module::getGallery()->RootPath . $this->path;
     }
 
     public function getWebRootPath()
@@ -81,32 +88,9 @@ class Image extends ActiveRecord
         return $this->path;
     }
 
-    public function setWebRootPath($path)
-    {
-        if ($tmpImage = Image::findOne(['path' => $path])) {
-            $this->setAttributes($tmpImage->attributes, false);
-            $this->isNewRecord = false;
-        } else $this->path = $path;
-    }
-
-    public function getRootPath()
-    {
-        return Module::$gallery->RootPath . $this->path;
-    }
-
     public function getName()
     {
         return preg_replace("/[^\/]*\//", "", $this->path);
-    }
-
-    public function getParentPath()
-    {
-        return str_replace(Module::$gallery->WebRoot, "", preg_replace("/[^\/]*$/", "", $this->path));
-    }
-
-    public function getShortFileName($length = 18, $suffix = "...")
-    {
-        return substr($fn = $this->Name, 0, $length) . ((strlen($fn) > $length) ? $suffix : "");
     }
 
     public function getState()
@@ -126,6 +110,7 @@ class Image extends ActiveRecord
             return false;
         }
     }
+
     public function beforeDelete()
     {
         if (parent::beforeDelete()) {
@@ -135,6 +120,7 @@ class Image extends ActiveRecord
             return false;
         }
     }
+
     public function saveVersions()
     {
         $imagine = YiiImage::getImagine();
@@ -148,6 +134,7 @@ class Image extends ActiveRecord
             }
         }
     }
+
     public function removeVersions($version = "ALL")
     {
         foreach (Module::$gallery->versions as $k => $v) {
@@ -162,11 +149,6 @@ class Image extends ActiveRecord
             unlink($this->RootPath);
         }
     }
-/*
-
-    $images = Image::find()->where(['rlike', 'path', "^{$path}[^/]+$"])->all();
-
-*/
     public function getImageAuthors()
     {
         return $this->hasMany(ImageAuthor::className(), ['image_id' => 'id']);
