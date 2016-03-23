@@ -13,7 +13,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/ComradePashka/yii2-ajaxable"
+            "url": "https://github.com/ComradePashka/yii2-ajaxable.git"
         }
     ],
     "require": {
