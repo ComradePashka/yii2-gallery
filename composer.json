@@ -13,15 +13,14 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/ComradePashka/yii2-ajaxable.git"
+            "url": "https://github.com/ComradePashka/yii2-ajaxable"
         }
     ],
     "require": {
         "yiisoft/yii2": "*",
         "execut/yii2-widget-bootstraptreeview": "*",
         "devgroup/yii2-dropzone": "*",
-        "comradepashka/yii2-ajaxable": "*",
-        "comradepashka/yii2-tinymce": "*"
+        "comradepashka/yii2-ajaxable": "*"
     },
     "autoload": {
         "psr-4": {
