@@ -97,7 +97,7 @@ class ImageController extends Controller
     {
         $model = $this->findModel($id);
         $model->saveVersions();
-        $path = $model->ParentPath;
+        $path = Module::getParentPath($model->path);
         Yii::info('Saving versions for: ' . $path, 'images');
         return $this->render('index', ['path' => $path]) . "PATH:: $path";
     }

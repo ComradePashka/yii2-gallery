@@ -13,8 +13,8 @@ use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use yii\imagine\Image as YiiImage;
 
-
 use comradepashka\gallery\Module;
+use creocoder\translateable\TranslateableBehavior;
 
 
 /**
@@ -50,11 +50,13 @@ class Image extends ActiveRecord
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
+            'translateable' => [
+                'class' => TranslateableBehavior::className(),
+                'translationAttributes' => ['title', 'description', 'keywords', 'header'],
+            ],
             [
                 'class' => TimestampBehavior::className(),
-                'value' => function () {
-                    return date('U');
-                }
+                'value' => function () { return date('U'); }
             ]
         ]);
     }
@@ -126,7 +128,7 @@ class Image extends ActiveRecord
         $imagine = YiiImage::getImagine();
         $newImage = $imagine->open($this->RootPath);
 
-        foreach (Module::$gallery->versions as $k => $v) {
+        foreach (Module::getGallery()->versions as $k => $v) {
             $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1-$k.\\3", $this->RootPath);
             if (file_exists($fn)) {
             } else {
@@ -137,7 +139,7 @@ class Image extends ActiveRecord
 
     public function removeVersions($version = "ALL")
     {
-        foreach (Module::$gallery->versions as $k => $v) {
+        foreach (Module::getGallery()->versions as $k => $v) {
             if ($k == $version || $version == "ALL") {
                 $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1-$k.\\3", $this->RootPath);
                 if (file_exists($fn)) {
@@ -149,13 +151,14 @@ class Image extends ActiveRecord
             unlink($this->RootPath);
         }
     }
+
     public function getImageAuthors()
     {
         return $this->hasMany(ImageAuthor::className(), ['image_id' => 'id']);
     }
 
-    public function getImageSEO()
+    public function getTranslations()
     {
-        return $this->hasMany(ImageSeo::className(), ['image_id' => 'id']);
+        return $this->hasMany(ImageTranslation::className(), ['image_id' => 'id']);
     }
 }

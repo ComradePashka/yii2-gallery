@@ -7,11 +7,12 @@ use Yii;
 use yii\base\BootstrapInterface;
 use yii\web\View;
 use Imagine\Image\Box;
+use yii\imagine\Image as YiiImage;
 
 class Module extends \yii\base\Module implements BootstrapInterface
 {
 
-    public $galleries;
+    public $galleries = [];
     /**
      * @var Gallery[]
      */
@@ -94,8 +95,14 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 ]
             ]]);
         $this->galleries = self::$_galleries;
-// module level config
+        foreach (self::$_galleries as $id => $config) {
+            $config['name'] = $id;
+            $config['module'] = $this;
+            self::$_galleries[$id] = Yii::createObject($config);
+        }
         if (!$this->layout) $this->layout = 'main';
+//        YiiImage::$driver = YiiImage::DRIVER_GD2;
+        yii::trace("Imagine driver:" . json_encode(YiiImage::$driver));
     }
 
     public static function checkConfig($post)
@@ -124,11 +131,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         if (!parent::beforeAction($action)) {
             return false;
-        }
-        foreach (self::$_galleries as $id => $config) {
-            $config['name'] = $id;
-            $config['module'] = $this;
-            self::$_galleries[$id] = Yii::createObject($config);
         }
         self::$galleryName = 'default';
         self::$currentPath = '/';

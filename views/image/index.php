@@ -39,7 +39,9 @@ foreach ($images as $i) {
     $allBtnClass = "btn";
     $btnImageSEO = $btnImageExtra = $btnImageAuthors = $btnImageThumbs = $btnImageAdd = $btnImageDelete = $allBtnClass;
 
-    if ($i->imageSEO) $btnImageSEO .= " btn-info"; else $btnImageSEO .= " btn-warning";
+//    if ($i->title)
+//    else $btnImageSEO .= " btn-warning";
+    $btnImageSEO .= " btn-info";
     $btnImageExtra = $btnImageThumbs .= " btn-info";
 //    if ($i->ImageExtra) $btnImageSEO .= " btn-default"; else $btnImageSEO .= " btn-warning";
     if ($i->imageAuthors) $btnImageAuthors .= " btn-info"; else $btnImageAuthors .= " btn-warning";

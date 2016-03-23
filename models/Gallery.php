@@ -75,4 +75,7 @@ class Gallery extends Model
     {
         return $this->_versionRegexp;
     }
+    public function init() {
+//        yii::trace("Gallery {$this->name} created!!!");
+    }
 }
