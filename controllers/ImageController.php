@@ -47,7 +47,7 @@ class ImageController extends Controller
                 return Json::encode($file);
             }
         }
-        return "?";
+        return Json::encode(["error" => "missing file!"]);
     }
 
     /*
