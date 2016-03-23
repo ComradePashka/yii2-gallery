@@ -20,7 +20,7 @@
         "yiisoft/yii2": "*",
         "execut/yii2-widget-bootstraptreeview": "*",
         "devgroup/yii2-dropzone": "*",
-        "comradepashka/yii2-ajaxable": "*"
+        "comradepashka/yii2-ajaxable": "@dev"
     },
     "autoload": {
         "psr-4": {
