@@ -10,6 +10,8 @@ use Imagine\Image\Box;
 
 class Module extends \yii\base\Module implements BootstrapInterface
 {
+
+    public $galleries;
     /**
      * @var Gallery[]
      */
@@ -28,7 +30,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * @return Gallery
      */
-    public static function getGallery() {
+    public static function getGallery()
+    {
         if (!isset(self::$_galleries[self::$galleryName])) self::$galleryName = 'default';
         return self::$_galleries[self::$galleryName];
     }
@@ -37,6 +40,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         return preg_replace("/[^\/]+\/$/", "", $path);
     }
+
     public function getFileName($path)
     {
         return preg_replace("/[^\/]*\//", "", $path);
@@ -62,7 +66,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * $return Images
      */
-    public static function getImages() {
+    public static function getImages()
+    {
 //        SELECT * FROM `image` WHERE `path` RLIKE '^/images/[^/]+$'
         return Image::find()->where(['rlike', 'path', "^" . self::getGallery()->getWebPath() . self::$currentPath . "[^/]+$"])->all();
     }
@@ -70,8 +75,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function bootstrap($app)
     {
 // is private static configurable? have to check it
-        if (!self::$_galleries)
-            self::$_galleries['default'] = [
+        self::$_galleries = array_merge($this->galleries,
+            ['default' => [
                 'class' => 'comradepashka\gallery\models\Gallery',
                 'rootPath' => '@frontend/web',
                 'webPath' => '/images',
@@ -87,7 +92,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
                             return $img->thumbnail(new Box(400, 400));
                         }
                 ]
-            ];
+            ]]);
+        $this->galleries = self::$_galleries;
 // module level config
         if (!$this->layout) $this->layout = 'main';
     }
@@ -102,14 +108,14 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 case "galleryName":
                     self::$galleryName = $val;
                     break;
-/*
- * just a sample
-                case "imagePlugin" :
-                    if (preg_match("(seo|extra|authors)", $val)) {
-                        self::$imagePlugin = $val;
-                    }
-                    break;
-*/
+                /*
+                 * just a sample
+                                case "imagePlugin" :
+                                    if (preg_match("(seo|extra|authors)", $val)) {
+                                        self::$imagePlugin = $val;
+                                    }
+                                    break;
+                */
             }
         }
     }
@@ -186,8 +192,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
 
  */
-
-
 
 
 ?>
