@@ -1,6 +1,5 @@
 {
     "name": "comradepashka/yii2-gallery",
-    "version": "0.0.1",
     "description": "Gallery extension for Yii2 framework with albums, images, extra info and tools for each image",
     "type": "yii2-extension",
     "keywords": ["yii2","extension","gallery","images"],
@@ -21,7 +20,7 @@
         "yiisoft/yii2": "*",
         "execut/yii2-widget-bootstraptreeview": "*",
         "devgroup/yii2-dropzone": "*",
-        "comradepashka/yii2-ajaxable": "@dev",
+        "comradepashka/yii2-ajaxable": "*",
         "comradepashka/yii2-tinymce": "*"
     },
     "autoload": {
