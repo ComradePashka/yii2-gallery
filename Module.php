@@ -39,7 +39,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
     public static function getParentPath($path)
     {
-        return preg_replace("/[^\/]+\/$/", "", $path);
+        return preg_replace("/[^\/]+\/?$/", "", $path);
     }
 
     public function getFileName($path)
@@ -101,8 +101,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
             self::$_galleries[$id] = Yii::createObject($config);
         }
         if (!$this->layout) $this->layout = 'main';
-//        YiiImage::$driver = YiiImage::DRIVER_GD2;
-        yii::trace("Imagine driver:" . json_encode(YiiImage::$driver));
     }
 
     public static function checkConfig($post)

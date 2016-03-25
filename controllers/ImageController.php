@@ -39,10 +39,10 @@ class ImageController extends Controller
         $fileName = 'file';
         if (isset($_FILES[$fileName])) {
             $file = UploadedFile::getInstanceByName($fileName);
-            $path = Module::$gallery->WebRootPath . Module::$currentPath . $file->name;
-            $webPath = Module::$gallery->WebRoot . Module::$currentPath . $file->name;
+            $path = Module::getGallery()->WebRootPath . Module::$currentPath . $file->name;
+            $webPath = Module::getGallery()->WebPath . Module::$currentPath . $file->name;
             if ($file->saveAs($path)) {
-                $image = new Image(['webrootpath' => $webPath]);
+                $image = new Image(['path' => $webPath]);
                 if ($image->isNewRecord) $image->save(); else $image->update();
                 return Json::encode($file);
             }
@@ -61,9 +61,9 @@ class ImageController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        $path = $model->ParentPath;
         $model->delete();
-        return $this->render('index', ['currentPath' => $path]);
+        return $this->redirect(['index', 'currentPath' => Module::$currentPath]);
+//        $path = Module::getParentPath($model->path);
 //        return "location:?currentPath=" . $path;
     }
 

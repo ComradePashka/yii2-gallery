@@ -70,10 +70,7 @@ class Image extends ActiveRecord
                 $this->isNewRecord = false;
             } else $this->path = $path;
         }
-        public function getParentPath()
-        {
-            return str_replace(Module::$gallery->WebRoot, "", preg_replace("/[^\/]*$/", "", $this->path));
-        }
+
         public function getShortFileName($length = 18, $suffix = "...")
         {
             return substr($fn = $this->Name, 0, $length) . ((strlen($fn) > $length) ? $suffix : "");

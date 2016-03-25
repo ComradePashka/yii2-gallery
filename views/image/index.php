@@ -19,6 +19,7 @@ use comradepashka\gallery\Module;
 use kartik\icons\Icon;
 use devgroup\dropzone\DropZone;
 
+/*
 echo Html::tag("div",
         Html::a("Some buttons", ['create', 'currentPath' => Module::$currentPath], [
             'id' => 'btnAlbum1', 'class' => 'btn btn-default', 'data-modal-pjax-callback-container' => '#pjax-albums'
@@ -30,6 +31,8 @@ echo Html::tag("div",
             'id' => 'btnAlbum3', 'class' => 'btn btn-default btn-target', 'data-modal-pjax-callback-container' => '#pjax-albums'
         ])
         , ['class' => 'btn-group btn-group-sm']);
+*/
+
 $n = 0;
 $row = "";
 
@@ -124,10 +127,13 @@ echo DropZone::widget([
         'complete' => "function(file){
                 this.removeFile(file);
                 if (this.getUploadingFiles().length < 1) {
+/*
                     $.pjax({
                         container: '#pjax-images',
                         url: location.pathname + '?currentPath=" . Module::$currentPath . "'
                     });
+*/
+                    location.href = location.pathname + '?currentPath=" . Module::$currentPath . "'
                 }
             }",
         'removedfile' => "function(file){console.log(file.name + ' is removed. Queue: ' + this.getUploadingFiles().length)}"

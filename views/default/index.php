@@ -33,7 +33,7 @@ foreach (Module::getInstance()->galleries as $name => $gallery) {
                         <td><b>Extensions: </b></td>
                         <td><?= Module::getGallery()->extensions ?></td>
                     </tr>
-                </table><?= Html::a("->", ['view', 'galleryName' => Module::$galleryName], ['class' => 'btn btn-primary text-center']) ?>
+                </table><?= Html::a("->", ['image/index', 'galleryName' => Module::$galleryName], ['class' => 'btn btn-primary text-center']) ?>
             </div>
         </div>
     </div>
