@@ -7,6 +7,7 @@
  */
 
 use comradepashka\gallery\models\ImageSeo;
+use yii\bootstrap\ButtonDropdown;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
@@ -82,11 +83,25 @@ foreach ($images as $i) {
             break;
     }
 
+    $versions = [];
+    foreach (Module::getGallery()->Versions as $name => $func) {
+//        $versions[] = ['label' => $name, 'url' => ]
+        $url = preg_replace("/(\.[^$]+)$/", "$name\\1", $imageUrl);
+        $versions[] = "<li><a href='{$url}' title='{$i->Name}' data-image-id='{$i->id}' data-image-ver='{$name}'>{$name}</a></li>";
+    }
+
 // btn-default btn-info btn-warning disabled
     $row .= "
 <div class='col-xs-2'>
 <div class='thumbnail {$activeImage}'>
-    <a href='#' title='{$i->Name}'><img src='{$imageUrl}' class='thumb' /></a>
+    <a href='{$imageUrl}' title='{$i->Name}' data-image-id='{$i->id}'><img src='{$imageUrl}' class='thumb' /></a>" .
+        ButtonDropdown::widget([
+            'label' => 'Version',
+            'options' => ['class' => 'btn-xs'],
+            'dropdown' => [
+                'items' => $versions,
+            ],
+        ]) . "
     <div class='caption text-center toolbox'>" .
         Html::tag('div',
             Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'], [

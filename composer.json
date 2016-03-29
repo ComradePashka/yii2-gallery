@@ -1,30 +1,35 @@
 {
-    "name": "comradepashka/yii2-gallery",
-    "description": "Gallery extension for Yii2 framework with albums, images, extra info and tools for each image",
-    "type": "yii2-extension",
-    "keywords": ["yii2","extension","gallery","images"],
-    "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "Pavel Sokolov",
-            "email": "comradepashka@gmail.com"
-        }
-    ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/ComradePashka/yii2-ajaxable.git"
-        }
-    ],
-    "require": {
-        "yiisoft/yii2": "*",
-        "creocoder/yii2-translateable": "~1.0",
-        "execut/yii2-widget-bootstraptreeview": "*",
-        "devgroup/yii2-dropzone": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "comradepashka\\gallery\\": ""
-        }
+  "name": "comradepashka/yii2-gallery",
+  "description": "Gallery extension for Yii2 framework with albums, images, extra info and tools for each image",
+  "type": "yii2-extension",
+  "keywords": [
+    "yii2",
+    "extension",
+    "gallery",
+    "images"
+  ],
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Pavel Sokolov",
+      "email": "comradepashka@gmail.com"
     }
+  ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/ComradePashka/yii2-ajaxable.git"
+    }
+  ],
+  "require": {
+    "yiisoft/yii2": "*",
+    "creocoder/yii2-translateable": "~1.0",
+    "execut/yii2-widget-bootstraptreeview": "*",
+    "devgroup/yii2-dropzone": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "comradepashka\\gallery\\": ""
+    }
+  }
 }

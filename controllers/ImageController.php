@@ -34,6 +34,9 @@ class ImageController extends Controller
         return $this->render('index');
     }
 
+    public function actionAjax(){
+        return $this->renderAjax('index');
+    }
     public function actionUpload()
     {
         $fileName = 'file';

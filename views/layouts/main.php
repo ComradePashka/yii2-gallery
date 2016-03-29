@@ -4,10 +4,10 @@
 /* @var $content string */
 
 use yii\helpers\Html;
-use yii\bootstrap\Modal;
 use comradepashka\gallery\Module;
 
-$this->beginContent('@app/views/layouts/main.php');
+if (Module::$imagePlugin != 'tinymce')
+    $this->beginContent('@app/views/layouts/main.php');
 
 //echo "<div class='row'> g: " . Module::$galleryName . "cp:" . Module::$currentPath . "</div>";
 
@@ -23,5 +23,6 @@ if ((yii::$app->controller->id != "default") || (yii::$app->controller->id == "d
     }
 }
 echo "<div class='row'>$content</div>";
-$this->endContent();
+if (Module::$imagePlugin != 'tinymce')
+    $this->endContent();
 ?>

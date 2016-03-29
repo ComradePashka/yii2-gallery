@@ -12,7 +12,7 @@ use yii\helpers\Html;
 foreach (Module::getInstance()->galleries as $name => $gallery) {
     Module::$galleryName = $name;
     ?>
-    <div class='col-xs-3'>
+    <div class='col-xs-4'>
         <div class='panel panel-default'>
             <div class='panel-heading'><?= Module::getGallery()->name ?></div>
             <div class='panel-body'>

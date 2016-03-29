@@ -56,7 +56,9 @@ class Image extends ActiveRecord
             ],
             [
                 'class' => TimestampBehavior::className(),
-                'value' => function () { return date('U'); }
+                'value' => function () {
+                    return date('U');
+                }
             ]
         ]);
     }
@@ -125,12 +127,15 @@ class Image extends ActiveRecord
         $imagine = YiiImage::getImagine();
         $newImage = $imagine->open($this->RootPath);
 
-        foreach (Module::getGallery()->versions as $k => $v) {
-            $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1-$k.\\3", $this->RootPath);
-            if (file_exists($fn)) {
-            } else {
-                $v($newImage)->save($fn);
-            }
+        foreach (Module::getGallery()->versions as $version => $func) {
+            $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1$version.\\3", $this->RootPath);
+            $func($newImage)->save($fn, ['jpeg_quality' => 100]);
+            /*
+                        if (file_exists($fn)) {
+                        } else {
+                            $func($newImage)->save($fn);
+                        }
+            */
         }
     }
 

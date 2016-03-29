@@ -3,6 +3,7 @@ namespace comradepashka\gallery;
 
 use comradepashka\gallery\models\Gallery;
 use comradepashka\gallery\models\Image;
+use Imagine\Image\ImageInterface;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\web\View;
@@ -25,6 +26,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * @var string
      */
     public static $currentPath;
+
+    /**
+     * @var string
+     */
+    public static $imagePlugin;
 
     public $controllerNamespace = 'comradepashka\gallery\controllers';
 
@@ -84,14 +90,26 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 'placeholder' => '/placeholder.png',
                 'extensions' => '/(jpg|png|gif)$/i',
                 'versions' => [
-                    "small" =>
+                    "-tiny" =>
                         function ($img) {
-                            return $img->thumbnail(new Box(128, 128));
+                            return $img->thumbnail(new Box(360, 240), ImageInterface::THUMBNAIL_OUTBOUND);
                         },
-                    "medium" =>
+                    "-small" =>
                         function ($img) {
-                            return $img->thumbnail(new Box(400, 400));
-                        }
+                            return $img->thumbnail(new Box(480, 320), ImageInterface::THUMBNAIL_OUTBOUND);
+                        },
+                    "-medium" =>
+                        function ($img) {
+                            return $img->thumbnail(new Box(720, 480), ImageInterface::THUMBNAIL_OUTBOUND);
+                        },
+                    "-big" =>
+                        function ($img) {
+                            return $img->thumbnail(new Box(1440, 960), ImageInterface::THUMBNAIL_OUTBOUND);
+                        },
+                    "-huge" =>
+                        function ($img) {
+                            return $img->thumbnail(new Box(1920, 1280), ImageInterface::THUMBNAIL_OUTBOUND);
+                        },
                 ]
             ]]);
         $this->galleries = self::$_galleries;
@@ -113,14 +131,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 case "galleryName":
                     self::$galleryName = $val;
                     break;
-                /*
-                 * just a sample
-                                case "imagePlugin" :
-                                    if (preg_match("(seo|extra|authors)", $val)) {
-                                        self::$imagePlugin = $val;
-                                    }
-                                    break;
-                */
+                case "imagePlugin" :
+                    if (preg_match("(tinymce|seo|extra|authors)", $val)) {
+                        self::$imagePlugin = $val;
+                    }
+                    break;
             }
         }
     }
@@ -133,7 +148,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
         self::$galleryName = 'default';
         self::$currentPath = '/';
         self::checkConfig(yii::$app->request->queryParams);
-        Yii::$app->getView()->on(View::EVENT_END_BODY, [$this, 'registerGalleryAsset']);
+        yii::$app->getView()->on(View::EVENT_END_BODY, [$this, 'registerGalleryAsset']);
         return true;
     }
 
@@ -142,10 +157,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
         /**
          * @var View $view
          */
-        if (Yii::$app->getRequest()->getIsAjax()) {
-            return;
-        }
+//        if (Yii::$app->getRequest()->getIsAjax()) {
+//            return;
+//        }
         $view = $event->sender;
+        yii::trace("register GalleryAsset!!!");
         GalleryAsset::register($view);
     }
 }
