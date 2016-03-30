@@ -94,7 +94,9 @@ foreach ($images as $i) {
     $row .= "
 <div class='col-xs-2'>
 <div class='thumbnail {$activeImage}'>
-    <a href='{$imageUrl}' title='{$i->Name}' data-image-id='{$i->id}'><img src='{$imageUrl}' class='thumb' /></a>" .
+    <a href='{$imageUrl}' title='{$i->Name}' data-image-id='{$i->id}'><img src='{$imageUrl}' class='thumb' /></a>
+    <div class='text-center'>
+    <div>{$i->Name}</div>" .
         ButtonDropdown::widget([
             'label' => 'Version',
             'options' => ['class' => 'btn-xs'],
@@ -102,6 +104,7 @@ foreach ($images as $i) {
                 'items' => $versions,
             ],
         ]) . "
+    </div>
     <div class='caption text-center toolbox'>" .
         Html::tag('div',
             Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'], [
