@@ -53,11 +53,11 @@ foreach ($images as $i) {
     $btnImageDelete .= " btn-danger";
 
     $activeImage = "thumb-image";
-/*
-    if ((Module::$currentImage->id) && (Module::$currentImage->id == $i->id)) {
-        $activeImage .= " thumb-image-active";
-    }
-*/
+    /*
+        if ((Module::$currentImage->id) && (Module::$currentImage->id == $i->id)) {
+            $activeImage .= " thumb-image-active";
+        }
+    */
     $state = "";
     $buttonAddDel = "";
     switch ($i->State) {
@@ -85,36 +85,37 @@ foreach ($images as $i) {
 
     $versions = [];
     foreach (Module::getGallery()->Versions as $name => $func) {
-//        $versions[] = ['label' => $name, 'url' => ]
         $url = preg_replace("/(\.[^$]+)$/", "$name\\1", $imageUrl);
         $versions[] = "<li><a href='{$url}' title='{$i->Name}' data-image-id='{$i->id}' data-image-ver='{$name}'>{$name}</a></li>";
     }
 
 // btn-default btn-info btn-warning disabled
+// , 'data-modal-pjax-callback-container' => '#pjax-images'
+
     $row .= "
 <div class='col-xs-2'>
 <div class='thumbnail {$activeImage}'>
     <a href='{$imageUrl}' title='{$i->Name}' data-image-id='{$i->id}'><img src='{$imageUrl}' class='thumb' /></a>
-    <div class='text-center'>
-    <div>{$i->Name}</div>" .
-        ButtonDropdown::widget([
-            'label' => 'Version',
-            'options' => ['class' => 'btn-xs'],
-            'dropdown' => [
-                'items' => $versions,
-            ],
-        ]) . "
-    </div>
-    <div class='caption text-center toolbox'>" .
+    <div class='caption text-center toolbox'>
+    <div>{$i->Name}</div>";
+    if (Module::$imagePlugin == "tinymce") {
+        $row .= "<div class='text-center'>" .
+            ButtonDropdown::widget([
+                'label' => 'Version',
+                'options' => ['class' => 'btn-xs' ],
+                'dropdown' => ['items' => $versions ],
+            ]) . "</div>";
+    }
+    $row .=
         Html::tag('div',
-            Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'], [
-                'class' => $btnImageSEO, 'data-modal-pjax-callback-container' => '#pjax-images']) .
-            Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['image/extra', 'id' => $i->id, 'currentPath' => Module::$currentPath], [
-                'class' => $btnImageExtra, 'data-modal-pjax-callback-container' => '#pjax-images']) .
-            Html::a(Icon::show('user', [], Icon::WHHG), ['image/authors', 'id' => $i->id, 'currentPath' => Module::$currentPath], [
-                'class' => $btnImageAuthors, 'data-modal-pjax-callback-container' => '#pjax-images']) .
-            Html::a(Icon::show('resize', [], Icon::WHHG), ['image/save-versions', 'id' => $i->id, 'currentPath' => Module::$currentPath], [
-                'class' => $btnImageThumbs, 'data-modal-pjax-callback-container' => '#pjax-images']) .
+            Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'],
+                ['class' => $btnImageSEO]) .
+            Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['image/extra', 'id' => $i->id, 'currentPath' => Module::$currentPath],
+                ['class' => $btnImageExtra]) .
+            Html::a(Icon::show('user', [], Icon::WHHG), ['image/authors', 'id' => $i->id, 'currentPath' => Module::$currentPath],
+                ['class' => $btnImageAuthors]) .
+            Html::a(Icon::show('resize', [], Icon::WHHG), ['image/save-versions', 'id' => $i->id, 'currentPath' => Module::$currentPath],
+                ['class' => $btnImageThumbs]) .
             $buttonAddDel,
             ['class' => 'btn-group btn-group-xs']
         ) .
@@ -126,7 +127,6 @@ foreach ($images as $i) {
         $row = "";
     }
 }
-
 echo Html::tag("div", $row, ['class' => 'row']);
 
 

@@ -33,7 +33,6 @@ class ImageController extends Controller
     {
         return $this->render('index');
     }
-
     public function actionAjax(){
         return $this->renderAjax('index');
     }
@@ -51,6 +50,18 @@ class ImageController extends Controller
             }
         }
         return Json::encode(["error" => "missing file!"]);
+    }
+
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['index']);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
     }
 
     /*
@@ -105,7 +116,7 @@ class ImageController extends Controller
         return $this->render('index', ['path' => $path]) . "PATH:: $path";
     }
 
-
+/*
     public function actionUpdate($gallery = 'default', $currentPath = '/')
     {
         $album = $this->module->galleries[$gallery]->rootAlbum->find($currentPath);
@@ -120,6 +131,7 @@ class ImageController extends Controller
             return $this->renderAjax('update', ['gallery' => $gallery, 'currentPath' => $currentPath, 'name' => $album->Name]);
         }
     }
+*/
 
     protected function findModel($id)
     {

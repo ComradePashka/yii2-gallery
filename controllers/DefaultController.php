@@ -24,7 +24,7 @@ class DefaultController extends Controller
 
     public function actionRegen()
     {
-//        return $this->render('index');
+        return $this->render('index');
         yii::trace('REGEN STARTED!' . strftime('%H:%M'));
         $images = Image::find()->where("header is null")->limit(10)->all();
         $lines = "REGEN ALL IMAGES!!!<br />";
@@ -43,6 +43,16 @@ class DefaultController extends Controller
         yii::trace('REGEN FINISHED!' . strftime('%H:%M'));
         if ($l > 1) Yii::$app->response->headers->set('refresh', '3');
         return "TOTAL: $l READY: $c YO2!<br />$lines";
+    }
+
+    public function actionCreateAlbum($name)
+    {
+        if (@mkdir(Module::getGallery()->WebRootPath . Module::$currentPath . $name))
+            return $this->redirect(['index', 'currentPath' => Module::$currentPath . $name . "/"]);
+        else {
+            $this->addError("path", "Can not create album: " . $this->WebRootPath . $name);
+            return $this;
+        }
     }
 
     public function actionRefresh()

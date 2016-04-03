@@ -116,6 +116,9 @@ class Image extends ActiveRecord
     {
         if (parent::beforeDelete()) {
             $this->removeVersions();
+            if (file_exists($this->RootPath)) {
+                unlink($this->RootPath);
+            }
             return true;
         } else {
             return false;
@@ -126,16 +129,9 @@ class Image extends ActiveRecord
     {
         $imagine = YiiImage::getImagine();
         $newImage = $imagine->open($this->RootPath);
-
         foreach (Module::getGallery()->versions as $version => $func) {
             $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1$version.\\3", $this->RootPath);
             $func($newImage)->save($fn, ['jpeg_quality' => 100]);
-            /*
-                        if (file_exists($fn)) {
-                        } else {
-                            $func($newImage)->save($fn);
-                        }
-            */
         }
     }
 
@@ -148,9 +144,6 @@ class Image extends ActiveRecord
                     unlink($fn);
                 }
             }
-        }
-        if (file_exists($this->RootPath)) {
-            unlink($this->RootPath);
         }
     }
 
