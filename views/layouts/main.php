@@ -10,13 +10,14 @@ use yii\helpers\Url;
 $this->registerJs("
     $('#createAlbum' ).dialog({
         autoOpen: false,
-        resizable: false,
+        width: 320,
+        height: 280,
         modal: true,
         buttons: {
             '[+]': function() {
                 $.ajax({
                     url: '" . Url::to(['default/ajax-create-album'])  ."',
-                    data: {name: $(this).find('#name').val()}
+                    data: {name: $(this).find('#name').val(), currentPath: '" . Module::$currentPath . "'}
                 })
                 .done(function (data) {
                     if (data.error) {
@@ -31,6 +32,10 @@ $this->registerJs("
     });
     $('#btnCreateAlbum').on('click', function (e) {
         $('#createAlbum' ).dialog('open');
+    });
+
+    $('#ru_name').keyup(function (e) {
+        $('#name').val(getSlug($(this).val()));
     });
 ");
 

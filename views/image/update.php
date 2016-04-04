@@ -26,14 +26,11 @@ $this->registerJs("
                 $('#albums').html('');
                 $('#images').html('');
                 $.each(data.albums, function(name, cwd) {
-//                    $('#albums').append(a);
-//                    $('#albums').append('<a href=\'' + cwd + '\'>' + name + '</a><br />');
                     $('#albums').append('<button type=\'button\' class=\'btn btn-xs btn-default btnChangePath\' cwd=\'' + cwd + '\'>' + name + '</button><br />');
                 });
                 $.each(data.images, function(id, src) {
                     $('#images').append('<img src=\'' + src + '\' image-id=\'' + id + '\' width=64 heigth=64>');
                 });
-//                console.log(data);
             })
             .error(function (jqXHR, status) {
                 alert('Error!' + status);
@@ -78,7 +75,7 @@ $form = ActiveForm::begin([
 
 ?>
 <div class="row">
-    <div class="col-xs-3">
+    <div class="col-xs-2">
         <div class='thumbnail {$activeImage}'>
             <a href='<?= $model->path ?>' title='<?= $model->Name ?>' data-image-id='<?= $model->id ?>'><img src='<?= $model->path ?>' class='thumb' /></a>
             <div class='caption text-center toolbox'>
@@ -86,7 +83,7 @@ $form = ActiveForm::begin([
             </div>
         </div>
     </div>
-    <div class="col-xs-9">
+    <div class="col-xs-10">
 
 
         <?= $form->field($model, 'path', [
@@ -100,8 +97,9 @@ $form = ActiveForm::begin([
         ?>
 
         <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'header')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'keywords')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'header')->textInput(['maxlength' => true]) ?>
         <div>Autors: <?= $authorlist ?></div>
         <div>Extra: <?= $extralist ?></div>
     </div>

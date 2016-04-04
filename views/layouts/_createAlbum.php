@@ -7,5 +7,10 @@
  */
 ?>
 <div id="createAlbum" title="Create new album">
+    <label for="name">Name:</label>
     <input type="text" name="name" id="name">
+    <br>
+    <label for="ru_name">Имя:</label>
+    <input type="text" name="ru_name" id="ru_name">
+    <br>
 </div>
