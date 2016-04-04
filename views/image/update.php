@@ -9,7 +9,47 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use comradepashka\gallery\Module;
+use yii\helpers\Url;
 
+$this->registerJs("
+    $('#newPath' ).dialog({
+        autoOpen: false,
+        modal: true,
+        height: 500,
+        width: 800,
+        open: function( event, ui ) {
+            $.ajax({
+                url: '" . Url::to(['default/ajax-file-list'])  ."',
+                data: {cwd: $(this).attr('cwd')}
+            })
+            .done(function (data) {
+                $('#albums').html('');
+                $('#images').html('');
+                $.each(data.albums, function(name, cwd) {
+//                    $('#albums').append(a);
+//                    $('#albums').append('<a href=\'' + cwd + '\'>' + name + '</a><br />');
+                    $('#albums').append('<button type=\'button\' class=\'btn btn-xs btn-default btnChangePath\' cwd=\'' + cwd + '\'>' + name + '</button><br />');
+                });
+                $.each(data.images, function(id, src) {
+                    $('#images').append('<img src=\'' + src + '\' image-id=\'' + id + '\' width=64 heigth=64>');
+                });
+//                console.log(data);
+            })
+            .error(function (jqXHR, status) {
+                alert('Error!' + status);
+            });
+        },
+        buttons: {
+            '[+]': function() {
+            }
+        }
+    });
+    $('body').on('click', '.btnChangePath', function (e) {
+        $('#newPath').dialog('close');
+        $('#newPath').attr('cwd', $(e.target).closest('.btn').attr('cwd'));
+        $('#newPath').dialog('open');
+    });
+");
 
     $versions = [];
     foreach (Module::getGallery()->Versions as $name => $func) {
@@ -47,7 +87,18 @@ $form = ActiveForm::begin([
         </div>
     </div>
     <div class="col-xs-9">
-        <div><?= $model->path ?></div>
+
+
+        <?= $form->field($model, 'path', [
+        'template' => '{label}<div class="col-sm-10"><div class="input-group">' .
+                '{input}' .
+                Html::tag("div",
+                Html::button('<span class="glyphicon glyphicon-edit"></span>', ['class' => 'btn btn-default btnChangePath', 'cwd' => Module::$currentPath])
+                , ['class' => 'input-group-btn']) .
+                '</div></div><div class="col-sm-10">{error}</div>'
+        ])->textInput(['maxlength' => true, 'disabled' => true])
+        ?>
+
         <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'header')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'keywords')->textInput(['maxlength' => true]) ?>

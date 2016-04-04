@@ -66,11 +66,18 @@ class DefaultController extends Controller
         }
     }
 
-    public function actionAjaxList($cwd)
+    public function actionAjaxFileList($cwd)
     {
         yii::$app->response->format = Response::FORMAT_JSON;
-
-        Module::getAlbums()
+        $cd = Module::$currentPath;
+        Module::$currentPath = $cwd;
+        $albums = Module::getAlbums();
+        $images = [];
+        foreach (Module::getImages() as $image) {
+            $images[$image->id] = $image->getWebVersionPath('-small');
+        }
+        Module::$currentPath = $cd;
+        return ['albums' => $albums, 'images' => $images];
     }
 
     public function actionRefresh()

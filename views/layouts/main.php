@@ -43,6 +43,7 @@ echo "<div class='panel panel-default'><div class='panel-heading'><b>" . Module:
     " C/A: " . yii::$app->controller->id . "/" . yii::$app->controller->action->id . "</div><div class='panel-body'>";
 if ((yii::$app->controller->id != "default") || (yii::$app->controller->id == "default" && yii::$app->controller->action->id != "index")) {
     echo $this->render('_createAlbum');
+    echo $this->render('_fileList');
     echo "<div class='col-xs-2'>" .
         Html::button("<span class='glyphicon glyphicon-plus'></span>", ["class" => "btn btn-default", 'id' => 'btnCreateAlbum']) .
         "<div class='list-group'>";
