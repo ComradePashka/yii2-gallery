@@ -56,7 +56,7 @@ class ImageController extends Controller
     {
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['index', 'currentPath' => Module::$currentPath]);
         } else {
             return $this->render('update', [
                 'model' => $model,

@@ -14,6 +14,8 @@ class GalleryAsset extends AssetBundle
     ];
     public $depends = [
         'yii\web\YiiAsset',
+        'yii\widgets\PjaxAsset',
+        'yii\jui\JuiAsset',
         'yii\bootstrap\BootstrapPluginAsset',
         'yii\bootstrap\BootstrapThemeAsset',
     ];

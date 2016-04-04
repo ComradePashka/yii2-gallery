@@ -2,6 +2,7 @@
 
 namespace comradepashka\gallery\models;
 
+use dektrium\user\models\User;
 use Yii;
 use yii\db\ActiveRecord;
 

@@ -8,11 +8,8 @@
 
 use comradepashka\gallery\models\ImageSeo;
 use yii\bootstrap\ButtonDropdown;
-use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
-use yii\widgets\Pjax;
 use yii\helpers\Html;
-//use yii\web\JsExpression;
 
 use comradepashka\gallery\models\Image;
 use comradepashka\gallery\Module;
@@ -85,7 +82,7 @@ foreach ($images as $i) {
 
     $versions = [];
     foreach (Module::getGallery()->Versions as $name => $func) {
-        $url = preg_replace("/(\.[^$]+)$/", "$name\\1", $imageUrl);
+        $url = $i->getWebVersionPath($name);
         $versions[] = "<li><a href='{$url}' title='{$i->Name}' data-image-id='{$i->id}' data-image-ver='{$name}'>{$name}</a></li>";
     }
 
@@ -94,10 +91,11 @@ foreach ($images as $i) {
 
     $row .= "
 <div class='col-xs-2'>
-<div class='thumbnail {$activeImage}'>
-    <a href='{$imageUrl}' title='{$i->Name}' data-image-id='{$i->id}'><img src='{$imageUrl}' class='thumb' /></a>
-    <div class='caption text-center toolbox'>
-    <div>{$i->Name}</div>";
+<div class='thumbnail'>" .
+Html::a("<img src='{$i->getWebVersionPath("-small")}' class='thumb' />",
+['image/update', 'id' => $i->id, 'title' => $i->Name, 'currentPath' => Module::$currentPath]) .
+"<div class='caption text-center'>{$i->Name}" ;
+
     if (Module::$imagePlugin == "tinymce") {
         $row .= "<div class='text-center'>" .
             ButtonDropdown::widget([
@@ -106,6 +104,7 @@ foreach ($images as $i) {
                 'dropdown' => ['items' => $versions ],
             ]) . "</div>";
     }
+/*
     $row .=
         Html::tag('div',
             Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'],
@@ -119,9 +118,8 @@ foreach ($images as $i) {
             $buttonAddDel,
             ['class' => 'btn-group btn-group-xs']
         ) .
-        "</div>
-    </div>
-</div>";
+*/
+    $row .= "</div></div></div>";
     if ((++$n % 6) == 0) {
         echo Html::tag("div", $row, ['class' => 'row']);
         $row = "";

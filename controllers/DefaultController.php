@@ -12,6 +12,7 @@ use comradepashka\gallery\models\Image;
 use Yii;
 use yii\web\Controller;
 use comradepashka\gallery\Module;
+use yii\web\Response;
 
 class DefaultController extends Controller
 {
@@ -55,19 +56,27 @@ class DefaultController extends Controller
         }
     }
 
+    public function actionAjaxCreateAlbum($name)
+    {
+        yii::$app->response->format = Response::FORMAT_JSON;
+        if (@mkdir(Module::getGallery()->WebRootPath . Module::$currentPath . $name))
+            return ['currentPath' => Module::$currentPath . $name . "/"];
+        else {
+            return ['error' => "Can not create album: " . $name];
+        }
+    }
+
+    public function actionAjaxList($cwd)
+    {
+        yii::$app->response->format = Response::FORMAT_JSON;
+
+        Module::getAlbums()
+    }
+
     public function actionRefresh()
     {
         Yii::$app->response->headers->set('refresh', '5');
         return "5sec to go!";
     }
 
-    public function actionView()
-    {
-        return $this->render('view');
-    }
-
-    public function actionTest()
-    {
-        return $this->render('test.twig');
-    }
 }

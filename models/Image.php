@@ -43,7 +43,7 @@ class Image extends ActiveRecord
     {
         return [
             [['path'], 'required'],
-            [['path', 'title', 'description', 'keywords'], 'string', 'max' => 255]
+            [['path', 'title', 'description', 'header', 'keywords'], 'string', 'max' => 255]
         ];
     }
 
@@ -87,6 +87,11 @@ class Image extends ActiveRecord
     public function getWebRootPath()
     {
         return $this->path;
+    }
+
+    public function getWebVersionPath($version)
+    {
+        return preg_replace("/(\.[^$]+)$/", "$version\\1", $this->path);
     }
 
     public function getName()
@@ -150,6 +155,11 @@ class Image extends ActiveRecord
     public function getImageAuthors()
     {
         return $this->hasMany(ImageAuthor::className(), ['image_id' => 'id']);
+    }
+
+    public function getImageExtra()
+    {
+        return $this->hasMany(ImageExtra::className(), ['image_id' => 'id']);
     }
 
     public function getTranslations()
