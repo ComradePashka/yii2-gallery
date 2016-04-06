@@ -120,9 +120,9 @@ class Image extends ActiveRecord
         return $progress;
     }
 
-    public function getHtml($version)
+    public function getHtml($version, $opt=[])
     {
-        return Html::img($this->getWebVersionPath($version), ['alt' => $this->title, 'title' => $this->description]);
+        return Html::img($this->getWebVersionPath($version), array_merge(['alt' => $this->title, 'title' => $this->description], $opt));
     }
 
     public function beforeSave($insert)
