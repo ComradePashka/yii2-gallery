@@ -9,6 +9,7 @@
 namespace comradepashka\gallery\models;
 
 use Yii;
+use yii\bootstrap\Html;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use yii\imagine\Image as YiiImage;
@@ -105,6 +106,23 @@ class Image extends ActiveRecord
         if ($this->isNewRecord) return Image::STATE_UNSAVED;
         if (!file_exists($this->RootPath)) return Image::STATE_BROKEN;
         return Image::STATE_NORMAL;
+    }
+
+    public function getProgress()
+    {
+        $progress = 0;
+        if ($this->title) $progress += 20;
+        if ($this->description) $progress += 20;
+        if ($this->keywords) $progress += 20;
+        if ($this->header) $progress += 10;
+        if ($this->imageAuthors) $progress += 10;
+        if ($this->imageExtra) $progress += 10;
+        return $progress;
+    }
+
+    public function getHtml($version)
+    {
+        return Html::img($this->getWebVersionPath($version), ['alt' => $this->title, 'title' => $this->description]);
     }
 
     public function beforeSave($insert)

@@ -83,7 +83,7 @@ foreach ($images as $i) {
     $versions = [];
     foreach (Module::getGallery()->Versions as $name => $func) {
         $url = $i->getWebVersionPath($name);
-        $versions[] = "<li><a href='{$url}' title='{$i->Name}' data-image-id='{$i->id}' data-image-ver='{$name}'>{$name}</a></li>";
+        $versions[] = "<li><a href='{$url}' data-origin='{$i->WebRootPath}' data-image-id='{$i->id}' data-image-ver='{$name}'>{$name}</a></li>";
     }
 
 // btn-default btn-info btn-warning disabled
@@ -94,7 +94,12 @@ foreach ($images as $i) {
 <div class='thumbnail'>" .
 Html::a("<img src='{$i->getWebVersionPath("-small")}' class='thumb' />",
 ['image/update', 'id' => $i->id, 'title' => $i->Name, 'currentPath' => Module::$currentPath]) .
-"<div class='caption text-center'>{$i->Name}" ;
+"<div class='caption text-center'>{$i->Name}
+<div class='progress zero-margin'>
+  <div class='progress-bar' role='progressbar' aria-valuenow='{$i->Progress}' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: {$i->Progress}%;'>
+        {$i->Progress}%
+  </div>
+</div>";
 
     if (Module::$imagePlugin == "tinymce") {
         $row .= "<div class='text-center'>" .

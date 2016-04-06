@@ -13,8 +13,10 @@ $this->registerJs("
         width: 320,
         height: 280,
         modal: true,
-        buttons: {
-            '[+]': function() {
+        buttons: [{
+            text: 'Добавить',
+            icons: { primary: 'ui-icon-plusthick' },
+            click : function() {
                 $.ajax({
                     url: '" . Url::to(['default/ajax-create-album'])  ."',
                     data: {name: $(this).find('#name').val(), currentPath: '" . Module::$currentPath . "'}
@@ -28,7 +30,7 @@ $this->registerJs("
                     alert('Error!' + status);
                 });
             }
-        }
+        }]
     });
     $('#btnCreateAlbum').on('click', function (e) {
         $('#createAlbum' ).dialog('open');
@@ -52,14 +54,14 @@ if ((yii::$app->controller->id != "default") || (yii::$app->controller->id == "d
     echo "<div class='col-xs-2'>" .
         Html::button("<span class='glyphicon glyphicon-plus'></span>", ["class" => "btn btn-default", 'id' => 'btnCreateAlbum']) .
         "<div class='list-group'>";
-    echo Html::a("<span class='glyphicon glyphicon-home'></span>", ['/gallery'], ["class" => "list-group-item"]);
+    echo Html::a("<span class='glyphicon glyphicon-home'></span>", ['/gallery'], ["class" => "list-group-item album-item"]);
     foreach (Module::getAlbums() as $label => $path) {
 //        $link[0] = yii::$app->controller->action->id;
         $link[0] = yii::$app->controller->id . "/";
         $link['currentPath'] = $path;
         if (Module::$galleryName != "default") $link['galleryName'] = Module::$galleryName;
         echo Html::a("<span class='glyphicon glyphicon-folder-close'></span> $label",
-            $link, ["class" => "list-group-item"]
+            $link, ["class" => "list-group-item album-item"]
         );
     }
     echo "</div></div><div class='col-xs-10'>$content</div>";
