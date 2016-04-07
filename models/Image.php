@@ -8,6 +8,7 @@
 
 namespace comradepashka\gallery\models;
 
+use comradepashka\seokit\UrlHistoryBehavior;
 use Yii;
 use yii\bootstrap\Html;
 use yii\db\ActiveRecord;
@@ -35,6 +36,8 @@ class Image extends ActiveRecord
     const THUMBS_PARTIAL = 2;
     const THUMBS_ALL = 3;
 
+    public static $reGenPicture = true;
+
     public static function tableName()
     {
         return 'image';
@@ -60,6 +63,10 @@ class Image extends ActiveRecord
                 'value' => function () {
                     return date('U');
                 }
+            ],
+            [
+                'class' => UrlHistoryBehavior::className(),
+                'url_attribute' => 'path'
             ]
         ]);
     }
@@ -128,7 +135,7 @@ class Image extends ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            $this->saveVersions();
+            if (Image::$reGenPicture) $this->saveVersions();
             return true;
         } else {
             return false;

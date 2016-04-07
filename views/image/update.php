@@ -26,10 +26,10 @@ $this->registerJs("
                 $('#albums').html('');
                 $('#images').html('');
                 $.each(data.albums, function(name, cwd) {
-                    $('#albums').append('<button type=\'button\' class=\'btn btn-xs btn-default btnChangePath\' cwd=\'' + cwd + '\'>' + name + '</button><br />');
+                    $('#albums').append('<a class=\'list-group-item album-item btnChangePath\' cwd=\'' + cwd + '\'>' + name + '</a>');
                 });
                 $.each(data.images, function(id, src) {
-                    $('#images').append('<img src=\'' + src + '\' image-id=\'' + id + '\' width=64 heigth=64>');
+                    $('#images').append('<img class=\'imgChangePath\' src=\'' + src + '\' image-id=\'' + id + '\' width=64 heigth=64>');
                 });
             })
             .error(function (jqXHR, status) {
@@ -43,8 +43,26 @@ $this->registerJs("
     });
     $('body').on('click', '.btnChangePath', function (e) {
         $('#newPath').dialog('close');
-        $('#newPath').attr('cwd', $(e.target).closest('.btn').attr('cwd'));
+        $('#newPath').attr('cwd', $(e.target).closest('.btnChangePath').attr('cwd'));
         $('#newPath').dialog('open');
+    });
+    $('body').on('click', '.imgChangePath', function (e) {
+        if (confirm('Заменить на эту фотку? Сто пудов?')) {
+//            location.href = '" . Url::to(['default/ajax-merge-image', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "';
+            $.ajax({
+                url: '" . Url::to(['default/ajax-merge-image'])  ."',
+                data: {id: " . $model->id . ", newImageId: $(e.target).attr('image-id')}
+            })
+            .done(function (data) {
+                console.log(data);
+                location.href = '" . Url::to(['image/update', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "&id=' + data.id + '';
+            })
+            .error(function (jqXHR, status) {
+                alert('Error!' + status);
+            });
+        }
+// $(e.target).closest('.imgChangePath').attr('cwd'));
+        $('#newPath').dialog('close');
     });
 ");
 

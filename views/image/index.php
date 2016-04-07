@@ -17,6 +17,16 @@ use comradepashka\gallery\Module;
 use kartik\icons\Icon;
 use devgroup\dropzone\DropZone;
 
+
+$this->registerJs("
+    $('#btnDelAll').on('click', function (e) {
+        if (confirm('УДАЛИТЬ??? ТОЧНЯК?')) {
+            location.href = '" . Url::to(['default/delete-all', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "';
+        }
+    });
+");
+
+
 /*
 echo Html::tag("div",
         Html::a("Some buttons", ['create', 'currentPath' => Module::$currentPath], [
@@ -32,9 +42,13 @@ echo Html::tag("div",
 */
 
 $n = 0;
-$row = "";
 
 $images = Module::getImages();
+
+$row = Html::tag("div",
+        Html::button('<span class="glyphicon glyphicon-remove"></span>DELETE ALL!!!',['id' => 'btnDelAll', 'class' => 'btn btn-danger']),
+    ['class' => 'row' . ((count($images) == 0) ? " hidden" : "" )]);
+
 
 foreach ($images as $i) {
     $allBtnClass = "btn";
@@ -92,10 +106,11 @@ foreach ($images as $i) {
     $row .= "
 <div class='col-xs-2'>
 <div class='thumbnail'>" .
-Html::a("<img src='{$i->getWebVersionPath("-small")}' class='thumb' />",
-['image/update', 'id' => $i->id, 'title' => $i->Name, 'currentPath' => Module::$currentPath]) .
-"<div class='caption text-center'>{$i->Name}
-<div class='progress zero-margin'>
+Html::a(Html::img($i->getWebVersionPath("-small"), ['class' => 'thumb' ,'title' => $i->Name]),
+['image/update', 'id' => $i->id, 'currentPath' => Module::$currentPath]) .
+"<div class='caption text-center'>{$i->Name}" .
+ Html::a('<span class="glyphicon glyphicon-share"></span>', ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-default']) .
+"<div class='progress zero-margin'>
   <div class='progress-bar' role='progressbar' aria-valuenow='{$i->Progress}' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: {$i->Progress}%;'>
         {$i->Progress}%
   </div>

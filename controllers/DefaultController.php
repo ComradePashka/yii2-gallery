@@ -46,6 +46,31 @@ class DefaultController extends Controller
         return "TOTAL: $l READY: $c YO2!<br />$lines";
     }
 
+    public function actionDeleteAll()
+    {
+        $images = Module::getImages();
+        foreach ($images as $i) {
+            $i->delete();
+        }
+        return $this->redirect(['image/index', 'currentPath' => Module::$currentPath]);
+    }
+
+    public function actionCloneMeta($id)
+    {
+        $images = Module::getImages();
+        $ingot = Image::findOne($id);
+        Image::$reGenPicture = false;
+        foreach ($images as $i) {
+            $i->title = $ingot->title;
+            $i->description = $ingot->description;
+            $i->keywords = $ingot->keywords;
+            $i->header = $ingot->header;
+            $i->save();
+        }
+        Image::$reGenPicture = true;
+        return $this->redirect(['image/index', 'currentPath' => Module::$currentPath]);
+    }
+
     public function actionCreateAlbum($name)
     {
         if (@mkdir(Module::getGallery()->WebRootPath . Module::$currentPath . $name))
@@ -74,10 +99,18 @@ class DefaultController extends Controller
         $albums = Module::getAlbums();
         $images = [];
         foreach (Module::getImages() as $image) {
-            $images[$image->id] = $image->getWebVersionPath('-small');
+            $images[$image->id] = $image->getWebVersionPath('-tiny');
         }
         Module::$currentPath = $cd;
         return ['albums' => $albums, 'images' => $images];
+    }
+
+    public function actionAjaxMergeImage($id, $newImageId) {
+        yii::$app->response->format = Response::FORMAT_JSON;
+        $image = Image::findOne($id);
+        $image->merge($newImageId);
+        $image = Image::findOne($newImageId);
+        return $image;
     }
 
     public function actionRefresh()
