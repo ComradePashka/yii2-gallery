@@ -169,7 +169,7 @@ class Image extends ActiveRecord
     {
         foreach (Module::getGallery()->versions as $k => $v) {
             if ($k == $version || $version == "ALL") {
-                $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1-$k.\\3", $this->RootPath);
+                $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1$k.\\3", $this->RootPath);
                 if (file_exists($fn)) {
                     unlink($fn);
                 }

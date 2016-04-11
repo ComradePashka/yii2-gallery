@@ -24,6 +24,12 @@ $this->registerJs("
             location.href = '" . Url::to(['default/delete-all', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "';
         }
     });
+    $('#btnDeleteImage').on('click', function (e) {
+        if (confirm('УДАЛИТЬ???')) {
+            location.href = '" . Url::to(['image/delete', 'id' => $i->id, 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "';
+        }
+    });
+
 ");
 
 
@@ -108,9 +114,10 @@ foreach ($images as $i) {
 <div class='thumbnail'>" .
 Html::a(Html::img($i->getWebVersionPath("-small"), ['class' => 'thumb' ,'title' => $i->Name]),
 ['image/update', 'id' => $i->id, 'currentPath' => Module::$currentPath]) .
-"<div class='caption text-center'>{$i->Name}" .
- Html::a('<span class="glyphicon glyphicon-share"></span>', ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-default']) .
-"<div class='progress zero-margin'>
+"<div class='caption text-center'>{$i->Name}<div class='row'>" .
+ Html::a('<span class="glyphicon glyphicon-share"></span>', ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-sm btn-default']) .
+ Html::button('<span class="glyphicon glyphicon-remove"></span>', ['id' => 'btnDeleteImage', 'class' => 'btn btn-sm btn-danger']) .
+"</div><div class='progress zero-margin'>
   <div class='progress-bar' role='progressbar' aria-valuenow='{$i->Progress}' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: {$i->Progress}%;'>
         {$i->Progress}%
   </div>
