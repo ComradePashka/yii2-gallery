@@ -108,6 +108,7 @@ class DefaultController extends Controller
     public function actionAjaxMergeImage($id, $newImageId) {
         yii::$app->response->format = Response::FORMAT_JSON;
         $image = Image::findOne($id);
+        $titilr ="";
         $image->merge($newImageId);
         $image = Image::findOne($newImageId);
         return $image;

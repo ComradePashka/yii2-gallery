@@ -20,16 +20,15 @@ use devgroup\dropzone\DropZone;
 
 $this->registerJs("
     $('#btnDelAll').on('click', function (e) {
-        if (confirm('УДАЛИТЬ??? ТОЧНЯК?')) {
+        if (confirm('УДАЛИТЬ ВСЁ???!!!!!')) {
             location.href = '" . Url::to(['default/delete-all', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "';
         }
     });
-    $('#btnDeleteImage').on('click', function (e) {
+    $('.btnDeleteImage').on('click', function (e) {
         if (confirm('УДАЛИТЬ???')) {
-            location.href = '" . Url::to(['image/delete', 'id' => $i->id, 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "';
+            location.href = '" . Url::to(['image/delete', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "&id=' + $(e.target).attr('image-id');
         }
     });
-
 ");
 
 
@@ -103,7 +102,7 @@ foreach ($images as $i) {
     $versions = [];
     foreach (Module::getGallery()->Versions as $name => $func) {
         $url = $i->getWebVersionPath($name);
-        $versions[] = "<li><a href='{$url}' data-origin='{$i->WebRootPath}' data-image-id='{$i->id}' data-image-ver='{$name}'>{$name}</a></li>";
+        $versions[] = "<li><a href='{$url}' data-origin='{$i->WebRootPath}' data-image-id='{$i->id}' data-image-version='{$name}'>{$name}</a></li>";
     }
 
 // btn-default btn-info btn-warning disabled
@@ -116,7 +115,7 @@ Html::a(Html::img($i->getWebVersionPath("-small"), ['class' => 'thumb' ,'title' 
 ['image/update', 'id' => $i->id, 'currentPath' => Module::$currentPath]) .
 "<div class='caption text-center'>{$i->Name}<div class='row'>" .
  Html::a('<span class="glyphicon glyphicon-share"></span>', ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-sm btn-default']) .
- Html::button('<span class="glyphicon glyphicon-remove"></span>', ['id' => 'btnDeleteImage', 'class' => 'btn btn-sm btn-danger']) .
+ Html::button('<span class="glyphicon glyphicon-remove"></span>', ['class' => 'btn btn-sm btn-danger btnDeleteImage', 'image-id' => $i->id]) .
 "</div><div class='progress zero-margin'>
   <div class='progress-bar' role='progressbar' aria-valuenow='{$i->Progress}' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: {$i->Progress}%;'>
         {$i->Progress}%
