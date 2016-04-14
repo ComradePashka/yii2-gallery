@@ -43,7 +43,7 @@ $this->registerJs("
     });
     $('body').on('click', '.btnChangePath', function (e) {
         $('#newPath').dialog('close');
-        $('#newPath').attr('cwd', $(e.target).closest('.btnChangePath').attr('cwd'));
+        $('#newPath').attr('cwd', $(this).attr('cwd'));
         $('#newPath').dialog('open');
     });
     $('body').on('click', '.imgChangePath', function (e) {
@@ -51,7 +51,7 @@ $this->registerJs("
 //            location.href = '" . Url::to(['default/ajax-merge-image', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "';
             $.ajax({
                 url: '" . Url::to(['default/ajax-merge-image'])  ."',
-                data: {id: " . $model->id . ", newImageId: $(e.target).attr('image-id')}
+                data: {id: " . $model->id . ", newImageId: $(this).attr('image-id')}
             })
             .done(function (data) {
                 console.log(data);
@@ -61,7 +61,6 @@ $this->registerJs("
                 alert('Error!' + status);
             });
         }
-// $(e.target).closest('.imgChangePath').attr('cwd'));
         $('#newPath').dialog('close');
     });
 ");

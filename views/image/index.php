@@ -26,7 +26,7 @@ $this->registerJs("
     });
     $('.btnDeleteImage').on('click', function (e) {
         if (confirm('УДАЛИТЬ???')) {
-            location.href = '" . Url::to(['image/delete', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "&id=' + $(e.target).attr('image-id');
+            location.href = '" . Url::to(['image/delete', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "&id=' + $(this).attr('image-id');
         }
     });
 ");
