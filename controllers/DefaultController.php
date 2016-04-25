@@ -84,8 +84,10 @@ class DefaultController extends Controller
     public function actionAjaxCreateAlbum($name)
     {
         yii::$app->response->format = Response::FORMAT_JSON;
-        if (@mkdir(Module::getGallery()->WebRootPath . Module::$currentPath . $name))
+        if (@mkdir(Module::getGallery()->WebRootPath . Module::$currentPath . $name)) {
+            chmod(Module::getGallery()->WebRootPath . Module::$currentPath . $name, 0777);
             return ['currentPath' => Module::$currentPath . $name . "/"];
+        }
         else {
             return ['error' => "Can not create album: " . $name];
         }
