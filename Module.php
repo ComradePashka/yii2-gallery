@@ -112,15 +112,15 @@ class Module extends \yii\base\Module implements BootstrapInterface
                         },
                     "-25" =>
                         function ($img) {
-                            return $img->resize(new Box($img->getWidth() * .25, $img->getHeight() * .25));
+                            return $img->resize(new Box($img->getSize()->getWidth() * .25, $img->getSize()->getHeight() * .25));
                         },
                     "-50" =>
                         function ($img) {
-                            return $img->resize(new Box($img->getWidth() * .5, $img->getHeight() * .5));
+                            return $img->resize(new Box($img->getSize()->getWidth() * .5, $img->getSize()->getHeight() * .5));
                         },
                     "-75" =>
                         function ($img) {
-                            return $img->resize(new Box($img->getWidth() * .75, $img->getHeight() * .75));
+                            return $img->resize(new Box($img->getSize()->getWidth() * .75, $img->getSize()->getHeight() * .75));
                         }
                 ]
             ]]);
