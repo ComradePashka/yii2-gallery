@@ -161,7 +161,7 @@ class Image extends ActiveRecord
         $newImage = $imagine->open($this->RootPath);
         foreach (Module::getGallery()->versions as $version => $func) {
             $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1$version.\\3", $this->RootPath);
-            $func($newImage)->save($fn, ['jpeg_quality' => 100]);
+            $func($newImage->copy())->save($fn, ['jpeg_quality' => 100]);
         }
     }
 
