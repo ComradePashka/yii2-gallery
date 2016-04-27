@@ -110,6 +110,18 @@ class Module extends \yii\base\Module implements BootstrapInterface
                         function ($img) {
                             return $img->thumbnail(new Box(1920, 1280), ImageInterface::THUMBNAIL_OUTBOUND);
                         },
+                    "-25" =>
+                        function ($img) {
+                            return $img->resize(new Box($img->getWidth() * .25, $img->getHeight() * .25));
+                        },
+                    "-50" =>
+                        function ($img) {
+                            return $img->resize(new Box($img->getWidth() * .5, $img->getHeight() * .5));
+                        },
+                    "-75" =>
+                        function ($img) {
+                            return $img->resize(new Box($img->getWidth() * .75, $img->getHeight() * .75));
+                        }
                 ]
             ]]);
         $this->galleries = self::$_galleries;
