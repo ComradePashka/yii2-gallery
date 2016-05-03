@@ -117,6 +117,7 @@ $form = ActiveForm::begin([
         <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'keywords')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'header')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'tagValues')->textInput(['maxlength' => true]) ?>
         <div>Autors: <?= $authorlist ?></div>
         <div>Extra: <?= $extralist ?></div>
     </div>

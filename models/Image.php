@@ -9,6 +9,7 @@
 namespace comradepashka\gallery\models;
 
 use comradepashka\seokit\UrlHistoryBehavior;
+use creocoder\taggable\TaggableBehavior;
 use Yii;
 use yii\bootstrap\Html;
 use yii\db\ActiveRecord;
@@ -58,11 +59,12 @@ class Image extends ActiveRecord
                 'class' => TranslateableBehavior::className(),
                 'translationAttributes' => ['title', 'description', 'keywords', 'header'],
             ],
+            'taggable' => [
+                'class' => TaggableBehavior::className(),
+            ],
             [
                 'class' => TimestampBehavior::className(),
-                'value' => function () {
-                    return date('U');
-                }
+                'value' => function () { return date('U'); }
             ],
             [
                 'class' => UrlHistoryBehavior::className(),
