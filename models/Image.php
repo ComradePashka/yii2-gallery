@@ -8,17 +8,15 @@
 
 namespace comradepashka\gallery\models;
 
-use comradepashka\seokit\UrlHistoryBehavior;
-use creocoder\taggable\TaggableBehavior;
 use Yii;
 use yii\bootstrap\Html;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use yii\imagine\Image as YiiImage;
-
-use comradepashka\gallery\Module;
 use creocoder\translateable\TranslateableBehavior;
-
+use creocoder\taggable\TaggableBehavior;
+use comradepashka\gallery\Module;
+use comradepashka\seokit\UrlHistoryBehavior;
 
 /**
  * Class Image
@@ -177,6 +175,10 @@ class Image extends ActiveRecord
                 }
             }
         }
+    }
+    public function getTags()
+    {
+        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])->viaTable('{{%image_tag_assn}}', ['image_id' => 'id']);
     }
 
     public function getImageAuthors()
