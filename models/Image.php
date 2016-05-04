@@ -46,7 +46,8 @@ class Image extends ActiveRecord
     {
         return [
             [['path'], 'required'],
-            [['path', 'title', 'description', 'header', 'keywords'], 'string', 'max' => 255]
+            [['path', 'title', 'description', 'header', 'keywords'], 'string', 'max' => 255],
+            ['tagValues', 'safe'],
         ];
     }
 
