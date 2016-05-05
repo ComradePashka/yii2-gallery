@@ -23,6 +23,12 @@ class ImageAuthorController extends \yii\web\Controller
             ]);
         }
     }
+    public function render($view, $params = [])
+    {
+        return Yii::$app->request->isAjax ?
+            parent::renderAjax($view, $params) :
+            parent::render($view, $params);
+    }
 
     public function actionDelete($image_id, $user_id)
     {

@@ -157,7 +157,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
                     self::$image_id = $val;
                     break;
             }
-            yii::trace("set global setting: {$key} => {$val}",'Gallery module');
+            yii::trace("set global setting: " . json_encode($key) . " => {$val}",'Gallery module');
         }
     }
 

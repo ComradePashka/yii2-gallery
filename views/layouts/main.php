@@ -41,36 +41,58 @@ $this->registerJs("
         $('#name').val(getSlug($(this).val()));
     });
 
-        $('#extraDialog').dialog({
+    $('#extraDialog').dialog({
         width: 800,
         height: 600,
         autoOpen: false,
         open: function( event, ui ) {
-            $.ajax({
-                    url: $(this).data('url'),
-/*
-                    data: {image_id: $(this).find('#name').val(), currentPath: '" . Module::$currentPath . "'}
-*/
-                })
-                .done(function (data) {
-                    if (data.error) {
-                        alert('Error!' + data.error);
-                    } else {
-                        console.log(data);
-                        $(this).html(data);
-                    }
-                    return false;
-                })
-                .error(function (jqXHR, status) {
-                    alert('Error!' + status);
-                });
+        $.ajax({
+                url: $(this).data('url'),
+                global: false,
+                type: $(this).data('method') ? $(this).data('method') : 'get',
+                data: $(this).data('src') ? $(this).data('src') : ''
+            })
+            .done(function (data, text, xhr) {
+                if (data.error) {
+                    alert('Error!' + data.error);
+                } else {
+                    $('#extraDialog').html(data);
+                    $('#extraDialog a').addClass('btnExtraDialog');
+                    $('#extraDialog [type=submit]').addClass('btnExtraDialog');
+                }
+                return false;
+            })
+            .fail(function (xhr, status) {
+                if (xhr.status == 302) {
+                    $('#extraDialog').data('url', xhr.getResponseHeader('x-redirect'));
+                    $('#extraDialog').data('method', 'get');
+                    $('#extraDialog').data('src', '');
+                    $('#extraDialog').dialog('close');
+                    $('#extraDialog').dialog('open');
+                } else {
+                    alert(status + ' :\\n' + xhr.statusText);
+                }
+                return false;
+            });
             return false;
+        },
+        close: function( event, ui ) {
+            $('#extraDialog').html('');
         }
     });
     $('body').on('click', '.btnExtraDialog', function (e) {
         $('#extraDialog').dialog('close');
         $('#extraDialog').data('url', $(this).attr('href'));
+        if ($(this).data('method')) {
+            $('#extraDialog').data('method', $(this).data('method'));
+        }
+        if (this.type == 'submit') {
+            $('#extraDialog').data('url', this.form.action);
+            $('#extraDialog').data('method', this.form.method);
+            $('#extraDialog').data('src', $(this.form).serialize());
+        }
         $('#extraDialog').dialog('open');
+        return false;
     });
 ");
 

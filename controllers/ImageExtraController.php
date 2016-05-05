@@ -9,7 +9,6 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 
-use comradepashka\ajaxable\AjaxableBehavior;
 use comradepashka\gallery\models\Image;
 use comradepashka\gallery\models\ImageExtra;
 
@@ -30,12 +29,20 @@ class ImageExtraController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+/*
             'ajaxable' => [
                 'class' => AjaxableBehavior::className(),
             ],
+*/
         ];
     }
 
+    public function render($view, $params = [])
+    {
+        return Yii::$app->request->isAjax ?
+            parent::renderAjax($view, $params) :
+            parent::render($view, $params);
+    }
     /**
      * Lists all ImageExtra models.
      * @return mixed
@@ -91,17 +98,6 @@ class ImageExtraController extends Controller
                 'image_id' => $model->image_id
             ]);
         }
-    }
-
-    public function actionAutocomplete($term)
-    {
-        yii::$app->response->format = Response::FORMAT_JSON;
-        return ImageExtra::find()
-            ->select(['value as value', 'value as label'])
-            ->where(['like', 'value', $term])
-            ->distinct()
-            ->asArray()
-            ->all();
     }
 
     /**

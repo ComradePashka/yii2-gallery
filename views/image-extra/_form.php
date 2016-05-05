@@ -17,17 +17,28 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin();
         $model->image_id = $image_id;
         echo $form->field($model, 'image_id')->hiddenInput();
-
+/*
         $categories= ImageExtra::find()
         ->select(['category as value', 'category as label'])
         ->distinct()
         ->asArray()
         ->all();
+*/
     ?>
     <?= $form->field($model, 'category')->widget(
         AutoComplete::className(), [
+/*
         'clientOptions' => [
             'source' => $categories,
+        ],
+*/
+        'clientOptions' => [
+            'source'=>new JsExpression("function(request, response) {
+                $.getJSON('" . Url::to(['default/ajax-image-extra-autocomplete']) . "', {
+                item: 'category',
+                term: request.term
+                }, response);
+            }")
         ],
         'options'=>[
             'class'=>'form-control'
@@ -38,7 +49,8 @@ use yii\widgets\ActiveForm;
         AutoComplete::className(), [
         'clientOptions' => [
             'source'=>new JsExpression("function(request, response) {
-                $.getJSON('" . Url::to('autocomplete') . "', {
+                $.getJSON('" . Url::to(['default/ajax-image-extra-autocomplete']) . "', {
+                item: 'value',
                 term: request.term
                 }, response);
             }")

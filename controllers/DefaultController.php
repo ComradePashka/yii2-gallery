@@ -9,6 +9,7 @@
 namespace comradepashka\gallery\controllers;
 
 use comradepashka\gallery\models\Image;
+use comradepashka\gallery\models\ImageExtra;
 use Yii;
 use yii\web\Controller;
 use comradepashka\gallery\Module;
@@ -115,6 +116,19 @@ class DefaultController extends Controller
         $image = Image::findOne($newImageId);
         return $image;
     }
+
+    public function actionAjaxImageExtraAutocomplete($item, $term) {
+        yii::$app->response->format = Response::FORMAT_JSON;
+        if (preg_match("/(value|category)/", $item)) {
+            return ImageExtra::find()
+                ->select(["$item as value", "$item as label"])
+                ->where(['like', $item, $term])
+                ->distinct()
+                ->asArray()
+                ->all();
+        } else return [];
+    }
+
 
     public function actionRefresh()
     {
