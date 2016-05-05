@@ -26,7 +26,8 @@
     "creocoder/yii2-translateable": "~1.0",
     "execut/yii2-widget-bootstraptreeview": "*",
     "devgroup/yii2-dropzone": "*",
-    "comradepashka/yii2-seokit": "@dev"
+    "comradepashka/yii2-seokit": "@dev",
+    "comradepashka/yii2-ajaxable": "@dev"
   },
   "autoload": {
     "psr-4": {
