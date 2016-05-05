@@ -72,12 +72,10 @@ $this->registerJs("
     }
     $authorlist = "";
     foreach ($model->imageAuthors as $author) {
-//        $authors[] = "<li>{$author->users->username}</li>";
-        $authorlist .= "<li>{$author->users->username}</li>";
+        $authorlist .= "<li>{$author->user->username} [ {$author->notes} ]</li>";
     }
     $extralist = "";
     foreach ($model->imageExtra as $extra) {
-//        $extra[] = "<li>{$extra->category} :: {$extra->value}</li>";
         $extralist .= "<li>{$extra->category} :: {$extra->value}</li>";
     }
 
@@ -93,8 +91,8 @@ $form = ActiveForm::begin([
 ?>
 <div class="row">
     <div class="col-xs-2">
-        <div class='thumbnail {$activeImage}'>
-            <a href='<?= $model->path ?>' title='<?= $model->Name ?>' data-image-id='<?= $model->id ?>'><img src='<?= $model->path ?>' class='thumb' /></a>
+        <div class='thumbnail'>
+            <?= $model->getHtml('-25', ['class' => 'thumb', 'data-image-id' => $model->id]); ?>
             <div class='caption text-center toolbox'>
                 <div><?= $model->Name ?></div>
             </div>

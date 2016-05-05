@@ -56,24 +56,26 @@ $row = Html::tag("div",
 
 
 foreach ($images as $i) {
-    $allBtnClass = "btn";
-    $btnImageSEO = $btnImageExtra = $btnImageAuthors = $btnImageThumbs = $btnImageAdd = $btnImageDelete = $allBtnClass;
+    $allBtnClass = "btn btn-sm";
+    $btnImageThumbs = $btnImageAdd = $btnImageDelete = $allBtnClass;
+    $btnImageThumbs .= " btn-info";
+    $btnImageExtra = $btnImageAuthors = "$allBtnClass btnExtraDialog";
 
-//    if ($i->title)
-//    else $btnImageSEO .= " btn-warning";
-    $btnImageSEO .= " btn-info";
-    $btnImageExtra = $btnImageThumbs .= " btn-info";
-//    if ($i->ImageExtra) $btnImageSEO .= " btn-default"; else $btnImageSEO .= " btn-warning";
+    if ($i->imageExtra) $btnImageExtra .= " btn-info"; else $btnImageExtra .= " btn-warning";
     if ($i->imageAuthors) $btnImageAuthors .= " btn-info"; else $btnImageAuthors .= " btn-warning";
     $btnImageAdd .= " btn-success";
     $btnImageDelete .= " btn-danger";
+    $btnImageSEO = "btn btn-info";
 
-    $activeImage = "thumb-image";
+//    Html::a('<span class="glyphicon glyphicon-share"></span>', ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-sm btn-default']) .
+//    Html::button('<span class="glyphicon glyphicon-remove"></span>', ['class' => 'btn btn-sm btn-danger btnDeleteImage', 'image-id' => $i->id]) .
+
     /*
+        $activeImage = "thumb-image";
         if ((Module::$currentImage->id) && (Module::$currentImage->id == $i->id)) {
             $activeImage .= " thumb-image-active";
         }
-    */
+
     $state = "";
     $buttonAddDel = "";
     switch ($i->State) {
@@ -98,7 +100,7 @@ foreach ($images as $i) {
                 'class' => $btnImageDelete, 'data-modal-pjax-callback-container' => '#pjax-images']);
             break;
     }
-
+*/
     $versions = [];
     foreach (Module::getGallery()->Versions as $name => $func) {
         $url = $i->getWebVersionPath($name);
@@ -113,10 +115,8 @@ foreach ($images as $i) {
 <div class='thumbnail'>" .
 Html::a(Html::img($i->getWebVersionPath("-small"), ['class' => 'thumb' ,'title' => $i->Name]),
 ['image/update', 'id' => $i->id, 'currentPath' => Module::$currentPath]) .
-"<div class='caption text-center'>{$i->Name}<div class='row'>" .
- Html::a('<span class="glyphicon glyphicon-share"></span>', ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-sm btn-default']) .
- Html::button('<span class="glyphicon glyphicon-remove"></span>', ['class' => 'btn btn-sm btn-danger btnDeleteImage', 'image-id' => $i->id]) .
-"</div><div class='progress zero-margin'>
+"<div class='caption text-center'>{$i->Name}
+<div class='progress zero-margin'>
   <div class='progress-bar' role='progressbar' aria-valuenow='{$i->Progress}' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: {$i->Progress}%;'>
         {$i->Progress}%
   </div>
@@ -130,21 +130,26 @@ Html::a(Html::img($i->getWebVersionPath("-small"), ['class' => 'thumb' ,'title' 
                 'dropdown' => ['items' => $versions ],
             ]) . "</div>";
     }
+
+    $row .= Html::tag('div',
+        Html::a(Icon::show('share', [], Icon::WHHG), ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-sm btn-default']) .
+        Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['image-extra/', 'image_id' => $i->id], ['class' => $btnImageExtra]) .
+        Html::a(Icon::show('user', [], Icon::WHHG), ['image-author/', 'image_id' => $i->id], ['class' => $btnImageAuthors]) .
+        Html::a(Icon::show('resize', [], Icon::WHHG), ['image/save-versions', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnImageThumbs]) .
+
+        Html::button(Icon::show('remove', [], Icon::WHHG), ['class' => 'btn btn-sm btn-danger btnDeleteImage', 'image-id' => $i->id]),
+        ['class' => 'btn-group btn-group-xs']
+    );
 /*
-    $row .=
-        Html::tag('div',
-            Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'],
-                ['class' => $btnImageSEO]) .
-            Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['image/extra', 'id' => $i->id, 'currentPath' => Module::$currentPath],
-                ['class' => $btnImageExtra]) .
-            Html::a(Icon::show('user', [], Icon::WHHG), ['image/authors', 'id' => $i->id, 'currentPath' => Module::$currentPath],
-                ['class' => $btnImageAuthors]) .
-            Html::a(Icon::show('resize', [], Icon::WHHG), ['image/save-versions', 'id' => $i->id, 'currentPath' => Module::$currentPath],
-                ['class' => $btnImageThumbs]) .
-            $buttonAddDel,
-            ['class' => 'btn-group btn-group-xs']
-        ) .
-*/
+    Html::a('<span class="glyphicon glyphicon-share"></span>', ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-sm btn-default']) .
+    Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'], ['class' => $btnImageSEO]) .
+
+    Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'], ['class' => $btnImageSEO]) .
+    Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['image/extra', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnImageExtra]) .
+    Html::a(Icon::show('user', [], Icon::WHHG), ['image/authors', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnImageAuthors]) .
+    Html::a(Icon::show('resize', [], Icon::WHHG), ['image/save-versions', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnImageThumbs]) .
+ */
+
     $row .= "</div></div></div>";
     if ((++$n % 6) == 0) {
         echo Html::tag("div", $row, ['class' => 'row']);

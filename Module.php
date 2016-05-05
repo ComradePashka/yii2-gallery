@@ -28,6 +28,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public static $currentPath;
 
     /**
+     * @var int
+     */
+    public static $image_id;
+
+    /**
      * @var string
      */
     public static $imagePlugin;
@@ -144,9 +149,12 @@ class Module extends \yii\base\Module implements BootstrapInterface
                     self::$galleryName = $val;
                     break;
                 case "imagePlugin" :
-                    if (preg_match("(tinymce|seo|extra|authors)", $val)) {
+                    if (preg_match("(tinymce|extra|authors)", $val)) {
                         self::$imagePlugin = $val;
                     }
+                    break;
+                case "image_id" :
+                    self::$image_id = $val;
                     break;
             }
             yii::trace("set global setting: {$key} => {$val}",'Gallery module');

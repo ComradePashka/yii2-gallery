@@ -25,7 +25,8 @@
     "yiisoft/yii2": "*",
     "creocoder/yii2-translateable": "~1.0",
     "execut/yii2-widget-bootstraptreeview": "*",
-    "devgroup/yii2-dropzone": "*"
+    "devgroup/yii2-dropzone": "*",
+    "comradepashka/yii2-ajaxable": "^0.0.3"
   },
   "autoload": {
     "psr-4": {

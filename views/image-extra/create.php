@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\ImageAuthor */
+/* @var $model comradepashka\gallery\models\ImageExtra */
 
-$this->title = Yii::t('i18n', 'Create Image Author');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('i18n', 'Image Authors'), 'url' => ['index']];
+$this->title = 'Create Image Extra';
+$this->params['breadcrumbs'][] = ['label' => 'Image Extras', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="image-author-create">
+<div class="image-extra-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

@@ -18,5 +18,6 @@ class GalleryAsset extends AssetBundle
         'yii\jui\JuiAsset',
         'yii\bootstrap\BootstrapPluginAsset',
         'yii\bootstrap\BootstrapThemeAsset',
+//        'comradepashka\yii2-ajaxable'
     ];
 }

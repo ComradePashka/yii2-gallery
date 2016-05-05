@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = Yii::t('i18n', 'Update');
 
     <?= $this->render('_form', [
         'model' => $model,
+        'image_id' => $image_id
     ]) ?>
 
 </div>

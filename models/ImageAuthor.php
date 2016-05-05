@@ -2,9 +2,10 @@
 
 namespace comradepashka\gallery\models;
 
-use dektrium\user\models\User;
 use Yii;
 use yii\db\ActiveRecord;
+
+use dektrium\user\models\User;
 
 
 /**
@@ -28,6 +29,7 @@ class ImageAuthor extends ActiveRecord
     {
         return [
             [['image_id', 'user_id'], 'required'],
+            ['notes', 'string']
         ];
     }
 
@@ -46,10 +48,11 @@ class ImageAuthor extends ActiveRecord
      */
     public function getImages()
     {
-        return $this->hasMany(Image::className(), ['image_id' => 'id']);
+        return $this->hasMany(Image::className(), ['id' => 'image_id']);
     }
-    public function getUsers()
+
+    public function getUser()
     {
-        return $this->hasMany(User::className(), ['user_id' => 'id']);
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 }

@@ -3,6 +3,7 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use comradepashka\gallery\models\Image;
 use yii\helpers\Html;
 use comradepashka\gallery\Module;
 use yii\helpers\Url;
@@ -39,8 +40,39 @@ $this->registerJs("
     $('#ru_name').keyup(function (e) {
         $('#name').val(getSlug($(this).val()));
     });
-");
 
+        $('#extraDialog').dialog({
+        width: 800,
+        height: 600,
+        autoOpen: false,
+        open: function( event, ui ) {
+            $.ajax({
+                    url: $(this).data('url'),
+/*
+                    data: {image_id: $(this).find('#name').val(), currentPath: '" . Module::$currentPath . "'}
+*/
+                })
+                .done(function (data) {
+                    if (data.error) {
+                        alert('Error!' + data.error);
+                    } else {
+                        console.log(data);
+                        $(this).html(data);
+                    }
+                    return false;
+                })
+                .error(function (jqXHR, status) {
+                    alert('Error!' + status);
+                });
+            return false;
+        }
+    });
+    $('body').on('click', '.btnExtraDialog', function (e) {
+        $('#extraDialog').dialog('close');
+        $('#extraDialog').data('url', $(this).attr('href'));
+        $('#extraDialog').dialog('open');
+    });
+");
 
 if (Module::$imagePlugin != 'tinymce')
     $this->beginContent('@app/views/layouts/main.php');
@@ -51,6 +83,7 @@ echo "<div class='panel panel-default'><div class='panel-heading'><b>" . Module:
 if ((yii::$app->controller->id != "default") || (yii::$app->controller->id == "default" && yii::$app->controller->action->id != "index")) {
     echo $this->render('_createAlbum');
     echo $this->render('_fileList');
+    echo $this->render('_extraDialog');
     echo "<div class='col-xs-2'>" .
         Html::button("<span class='glyphicon glyphicon-plus'></span>", ["class" => "btn btn-default", 'id' => 'btnCreateAlbum']) .
         "<div class='list-group'>";
@@ -64,7 +97,18 @@ if ((yii::$app->controller->id != "default") || (yii::$app->controller->id == "d
             $link, ["class" => "list-group-item album-item"]
         );
     }
-    echo "</div></div><div class='col-xs-10'>$content</div>";
+    echo "</div></div>";
+
+    if (($image_id = Module::$image_id) && ($model = Image::findOne($image_id))) $content = "
+    <div class='col-xs-2'>
+        <div class='thumbnail'>
+        {$model->getHtml('-25', ['class' => 'thumb', 'data-image-id' => $model->id])}
+        <div class='caption text-center toolbox'>{$model->Name}</div>
+        </div>
+    </div>
+    <div class='col-xs-10'>$content</div>";
+
+    echo "<div class='col-xs-10'>$content</div>";
 } else {
     echo "<div class='row'>$content</div>";
 }

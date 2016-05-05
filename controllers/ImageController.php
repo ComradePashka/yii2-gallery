@@ -51,7 +51,6 @@ class ImageController extends Controller
         }
         return Json::encode(["error" => "missing file!"]);
     }
-
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
