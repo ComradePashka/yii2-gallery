@@ -52,20 +52,28 @@ $images = Module::getImages();
 
 $row = Html::tag("div",
         Html::button('<span class="glyphicon glyphicon-remove"></span>DELETE ALL!!!',['id' => 'btnDelAll', 'class' => 'btn btn-danger']),
-    ['class' => 'row' . ((count($images) == 0) ? " hidden" : "" )]);
+    ['class' => 'col-xs-12' . ((count($images) == 0) ? " hidden" : "" )]);
 
 
 foreach ($images as $i) {
     $allBtnClass = "btn btn-sm";
-    $btnImageThumbs = $btnImageAdd = $btnImageDelete = $allBtnClass;
+    $btnImageThumbs = $btnCloneMeta = $btnCloneExtra = $btnCloneAuthor = $btnImageDelete = $allBtnClass;
     $btnImageThumbs .= " btn-info";
     $btnImageExtra = $btnImageAuthors = "$allBtnClass btnExtraDialog";
 
-    if ($i->imageExtra) $btnImageExtra .= " btn-info"; else $btnImageExtra .= " btn-warning";
-    if ($i->imageAuthors) $btnImageAuthors .= " btn-info"; else $btnImageAuthors .= " btn-warning";
-    $btnImageAdd .= " btn-success";
+    if ($i->imageExtra) {
+        $btnImageExtra .= " btn-info";
+        $btnCloneExtra .= " btn-success";
+    } else $btnImageExtra .= " btn-warning";
+    if ($i->imageAuthors) {
+        $btnImageAuthors .= " btn-info";
+        $btnCloneAuthor .= " btn-success";
+    } else $btnImageAuthors .= " btn-warning";
+    if ($i->Progress >= 20) $btnCloneMetaEx = " btn-info";
+    if ($i->Progress >= 40) $btnCloneMetaEx = " btn-warning";
+    if ($i->Progress >= 80) $btnCloneMetaEx = " btn-success";
+    $btnCloneMeta .= $btnCloneMetaEx;
     $btnImageDelete .= " btn-danger";
-    $btnImageSEO = "btn btn-info";
 
 //    Html::a('<span class="glyphicon glyphicon-share"></span>', ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-sm btn-default']) .
 //    Html::button('<span class="glyphicon glyphicon-remove"></span>', ['class' => 'btn btn-sm btn-danger btnDeleteImage', 'image-id' => $i->id]) .
@@ -113,8 +121,8 @@ foreach ($images as $i) {
     $row .= "
 <div class='col-xs-2'>
 <div class='thumbnail'>" .
-Html::a(Html::img($i->getWebVersionPath("-small"), ['class' => 'thumb' ,'title' => $i->Name]),
-['image/update', 'id' => $i->id, 'currentPath' => Module::$currentPath]) .
+Html::a($i->getHtml("-tiny", ['class' => 'thumb' ,'title' => $i->Name]),
+    ['image/update', 'id' => $i->id, 'currentPath' => Module::$currentPath]) .
 "<div class='caption text-center'>{$i->Name}
 <div class='progress zero-margin'>
   <div class='progress-bar' role='progressbar' aria-valuenow='{$i->Progress}' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: {$i->Progress}%;'>
@@ -132,11 +140,16 @@ Html::a(Html::img($i->getWebVersionPath("-small"), ['class' => 'thumb' ,'title' 
     }
 
     $row .= Html::tag('div',
-        Html::a(Icon::show('share', [], Icon::WHHG), ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-sm btn-default']) .
+        Html::a(Icon::show('share', [], Icon::WHHG), ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnCloneMeta]) .
+        Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['default/clone-extra', 'id' => $i->id], ['class' => $btnCloneExtra]) .
+        Html::a(Icon::show('user', [], Icon::WHHG), ['default/clone-author', 'id' => $i->id], ['class' => $btnCloneAuthor]),
+        ['class' => 'btn-group btn-group-xs pull-left']
+    );
+    $row .= Html::tag('div',
+        Html::a(Icon::show('cloud', [], Icon::WHHG), ['someaction', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => 'btn btn-sm btn-info']) .
         Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['image-extra/', 'image_id' => $i->id], ['class' => $btnImageExtra]) .
         Html::a(Icon::show('user', [], Icon::WHHG), ['image-author/', 'image_id' => $i->id], ['class' => $btnImageAuthors]) .
         Html::a(Icon::show('resize', [], Icon::WHHG), ['image/save-versions', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnImageThumbs]) .
-
         Html::button(Icon::show('remove', [], Icon::WHHG), ['class' => 'btn btn-sm btn-danger btnDeleteImage', 'image-id' => $i->id]),
         ['class' => 'btn-group btn-group-xs']
     );

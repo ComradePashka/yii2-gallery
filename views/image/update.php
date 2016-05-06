@@ -92,7 +92,7 @@ $form = ActiveForm::begin([
 <div class="row">
     <div class="col-xs-2">
         <div class='thumbnail'>
-            <?= $model->getHtml('-25', ['class' => 'thumb', 'data-image-id' => $model->id]); ?>
+            <?= $model->getHtml('-tiny', ['class' => 'thumb', 'data-image-id' => $model->id]); ?>
             <div class='caption text-center toolbox'>
                 <div><?= $model->Name ?></div>
             </div>

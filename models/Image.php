@@ -122,9 +122,9 @@ class Image extends ActiveRecord
         if ($this->title) $progress += 20;
         if ($this->description) $progress += 20;
         if ($this->keywords) $progress += 20;
-        if ($this->header) $progress += 10;
-        if ($this->imageAuthors) $progress += 10;
-        if ($this->imageExtra) $progress += 10;
+        if ($this->header) $progress += 20;
+        if ($this->imageAuthors) $progress += 5;
+        if ($this->imageExtra) $progress += 5;
         return $progress;
     }
 

@@ -124,7 +124,7 @@ if ((yii::$app->controller->id != "default") || (yii::$app->controller->id == "d
     if (($image_id = Module::$image_id) && ($model = Image::findOne($image_id))) $content = "
     <div class='col-xs-2'>
         <div class='thumbnail'>
-        {$model->getHtml('-25', ['class' => 'thumb', 'data-image-id' => $model->id])}
+        {$model->getHtml('-tiny', ['class' => 'thumb', 'data-image-id' => $model->id])}
         <div class='caption text-center toolbox'>{$model->Name}</div>
         </div>
     </div>

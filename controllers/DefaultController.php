@@ -9,6 +9,7 @@
 namespace comradepashka\gallery\controllers;
 
 use comradepashka\gallery\models\Image;
+use comradepashka\gallery\models\ImageAuthor;
 use comradepashka\gallery\models\ImageExtra;
 use Yii;
 use yii\web\Controller;
@@ -71,6 +72,46 @@ class DefaultController extends Controller
         Image::$reGenPicture = true;
         return $this->redirect(['image/index', 'currentPath' => Module::$currentPath]);
     }
+    public function actionCloneExtra($id)
+    {
+        $images = Module::getImages();
+        $ingot = Image::findOne($id);
+        Image::$reGenPicture = false;
+        foreach ($images as $i) {
+            foreach ($ingot->imageExtra as $ie) {
+                $author = new ImageExtra();
+                $data = $ie->attributes;
+                $data['image_id'] = $i->id;
+                unset($data['id']);
+                $author->setAttributes($data, false);
+                $i->link('imageExtra', $author);
+            }
+            $i->save();
+        }
+        Image::$reGenPicture = true;
+        return $this->redirect(['image/index', 'currentPath' => Module::$currentPath]);
+    }
+
+    public function actionCloneAuthor($id)
+    {
+        $images = Module::getImages();
+        $ingot = Image::findOne($id);
+        Image::$reGenPicture = false;
+
+        foreach ($images as $i) {
+            foreach ($ingot->imageAuthors as $ia) {
+                if (! ($author = ImageAuthor::findOne(['image_id' => $i->id, 'user_id' => $ia->user_id]))) {
+                    $author = new ImageAuthor();
+                }
+                $author->setAttributes($ia->attributes, false);
+                $i->link('imageAuthors', $author);
+            }
+            $i->save();
+        }
+        Image::$reGenPicture = true;
+        return $this->redirect(['image/index', 'currentPath' => Module::$currentPath]);
+    }
+
 
     public function actionCreateAlbum($name)
     {
