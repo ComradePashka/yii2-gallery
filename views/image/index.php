@@ -141,8 +141,8 @@ Html::a($i->getHtml("-tiny", ['class' => 'thumb' ,'title' => $i->Name]),
 
     $row .= Html::tag('div',
         Html::a(Icon::show('share', [], Icon::WHHG), ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnCloneMeta]) .
-        Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['default/clone-extra', 'id' => $i->id], ['class' => $btnCloneExtra]) .
-        Html::a(Icon::show('user', [], Icon::WHHG), ['default/clone-author', 'id' => $i->id], ['class' => $btnCloneAuthor]),
+        Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['default/clone-extra', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnCloneExtra]) .
+        Html::a(Icon::show('user', [], Icon::WHHG), ['default/clone-author', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnCloneAuthor]),
         ['class' => 'btn-group btn-group-xs pull-left']
     );
     $row .= Html::tag('div',
