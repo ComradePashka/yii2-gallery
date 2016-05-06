@@ -10,13 +10,9 @@ use comradepashka\gallery\models\ImageSeo;
 use yii\bootstrap\ButtonDropdown;
 use yii\helpers\Url;
 use yii\helpers\Html;
-
-use comradepashka\gallery\models\Image;
-use comradepashka\gallery\Module;
-
 use kartik\icons\Icon;
 use devgroup\dropzone\DropZone;
-
+use comradepashka\gallery\Module;
 
 $this->registerJs("
     $('#btnDelAll').on('click', function (e) {
@@ -31,33 +27,15 @@ $this->registerJs("
     });
 ");
 
-
-/*
-echo Html::tag("div",
-        Html::a("Some buttons", ['create', 'currentPath' => Module::$currentPath], [
-            'id' => 'btnAlbum1', 'class' => 'btn btn-default', 'data-modal-pjax-callback-container' => '#pjax-albums'
-        ]) .
-        Html::a(Icon::show('systemfolder', [], Icon::WHHG), ['update', 'currentPath' => Module::$currentPath], [
-            'id' => 'btnAlbum2', 'class' => 'btn btn-default btn-target', 'data-modal-pjax-callback-container' => '#pjax-albums'
-        ]) .
-        Html::a(Icon::show('deletefolder', [], Icon::WHHG), ['delete', 'currentPath' => Module::$currentPath], [
-            'id' => 'btnAlbum3', 'class' => 'btn btn-default btn-target', 'data-modal-pjax-callback-container' => '#pjax-albums'
-        ])
-        , ['class' => 'btn-group btn-group-sm']);
-*/
-
 $n = 0;
-
 $images = Module::getImages();
-
 $row = Html::tag("div",
         Html::button('<span class="glyphicon glyphicon-remove"></span>DELETE ALL!!!',['id' => 'btnDelAll', 'class' => 'btn btn-danger']),
     ['class' => 'col-xs-12' . ((count($images) == 0) ? " hidden" : "" )]);
 
-
 foreach ($images as $i) {
     $allBtnClass = "btn btn-sm";
-    $btnImageThumbs = $btnCloneMeta = $btnCloneExtra = $btnCloneAuthor = $btnImageDelete = $allBtnClass;
+    $btnImageThumbs = $btnCloneMeta = $btnCloneExtra = $btnCloneAuthor = $btnCloneTags= $btnImageDelete = $allBtnClass;
     $btnImageThumbs .= " btn-info";
     $btnImageExtra = $btnImageAuthors = "$allBtnClass btnExtraDialog";
 
@@ -69,6 +47,10 @@ foreach ($images as $i) {
         $btnImageAuthors .= " btn-info";
         $btnCloneAuthor .= " btn-success";
     } else $btnImageAuthors .= " btn-warning";
+    if ($i->tags) {
+        $btnCloneTags .= " btn-success";
+    } else $btnCloneTags .= " btn-warning";
+
     if ($i->Progress >= 20) $btnCloneMetaEx = " btn-info";
     if ($i->Progress >= 40) $btnCloneMetaEx = " btn-warning";
     if ($i->Progress >= 80) $btnCloneMetaEx = " btn-success";
@@ -83,40 +65,12 @@ foreach ($images as $i) {
         if ((Module::$currentImage->id) && (Module::$currentImage->id == $i->id)) {
             $activeImage .= " thumb-image-active";
         }
-
-    $state = "";
-    $buttonAddDel = "";
-    switch ($i->State) {
-        case Image::STATE_EMPTY:
-            $imageUrl = Module::getGallery()->Placeholder;
-            $state = "EMPTY";
-            break;
-        case Image::STATE_UNSAVED:
-            $imageUrl = $i->webrootpath;
-            $state = "UNSAVED";
-            $buttonAddDel = Html::a(Icon::show('plus', [], Icon::WHHG), ['image/add', 'path' => $i->path], [
-                'class' => $btnImageAdd, 'data-modal-pjax-callback-container' => '#pjax-images']);
-            break;
-        case Image::STATE_BROKEN:
-            $imageUrl = Module::getGallery()->Placeholder;
-            $state = "BROKEN";
-            break;
-        default:
-            $imageUrl = $i->webrootpath;
-            $state = "NORMAL";
-            $buttonAddDel = Html::a(Icon::show('remove', [], Icon::WHHG), ['image/delete', 'id' => $i->id], [
-                'class' => $btnImageDelete, 'data-modal-pjax-callback-container' => '#pjax-images']);
-            break;
-    }
 */
     $versions = [];
     foreach (Module::getGallery()->Versions as $name => $func) {
         $url = $i->getWebVersionPath($name);
         $versions[] = "<li><a href='{$url}' data-origin='{$i->WebRootPath}' data-image-id='{$i->id}' data-image-version='{$name}'>{$name}</a></li>";
     }
-
-// btn-default btn-info btn-warning disabled
-// , 'data-modal-pjax-callback-container' => '#pjax-images'
 
     $row .= "
 <div class='col-xs-2'>
@@ -142,7 +96,8 @@ Html::a($i->getHtml("-tiny", ['class' => 'thumb' ,'title' => $i->Name]),
     $row .= Html::tag('div',
         Html::a(Icon::show('share', [], Icon::WHHG), ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnCloneMeta]) .
         Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['default/clone-extra', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnCloneExtra]) .
-        Html::a(Icon::show('user', [], Icon::WHHG), ['default/clone-author', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnCloneAuthor]),
+        Html::a(Icon::show('user', [], Icon::WHHG), ['default/clone-author', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnCloneAuthor]) .
+        Html::a(Icon::show('tags', [], Icon::WHHG), ['default/clone-tags', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnCloneTags]),
         ['class' => 'btn-group btn-group-xs pull-left']
     );
     $row .= Html::tag('div',
@@ -153,15 +108,6 @@ Html::a($i->getHtml("-tiny", ['class' => 'thumb' ,'title' => $i->Name]),
         Html::button(Icon::show('remove', [], Icon::WHHG), ['class' => 'btn btn-sm btn-danger btnDeleteImage', 'image-id' => $i->id]),
         ['class' => 'btn-group btn-group-xs']
     );
-/*
-    Html::a('<span class="glyphicon glyphicon-share"></span>', ['default/clone-meta', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['id' => 'btnCloneMeta', 'class' => 'btn btn-sm btn-default']) .
-    Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'], ['class' => $btnImageSEO]) .
-
-    Html::a(Icon::show('edit', [], Icon::WHHG), ['image/index', 'image_id' => $i->id, 'currentPath' => Module::$currentPath, 'imagePlugin' => 'seo'], ['class' => $btnImageSEO]) .
-    Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['image/extra', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnImageExtra]) .
-    Html::a(Icon::show('user', [], Icon::WHHG), ['image/authors', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnImageAuthors]) .
-    Html::a(Icon::show('resize', [], Icon::WHHG), ['image/save-versions', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnImageThumbs]) .
- */
 
     $row .= "</div></div></div>";
     if ((++$n % 6) == 0) {

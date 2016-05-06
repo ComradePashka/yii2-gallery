@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
         foreach ($models as $model) {
             echo Html::tag('div',
-                Html::tag('span', "{$model->user->username} :: {$model->notes}", ['class' => 'input-group-addon']) .
+                Html::tag('span', "{$model->user->profile->name} (<b>{$model->user->username}</b>) [ <i>{$model->notes}</i> ]", ['class' => 'input-group-addon']) .
                 Html::tag('div',
                     Html::a('<span class="glyphicon glyphicon-edit"></span>', ['update', 'image_id' => $image_id, 'user_id' => $model->user_id], ['class' => 'btn btn-success']) .
                     Html::a('<span class="glyphicon glyphicon-remove"></span>', ['delete', 'image_id' => $image_id, 'user_id' => $model->user_id], ['class' => 'btn btn-danger'])

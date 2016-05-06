@@ -119,10 +119,10 @@ class Image extends ActiveRecord
     public function getProgress()
     {
         $progress = 0;
-        if ($this->title) $progress += 20;
-        if ($this->description) $progress += 20;
-        if ($this->keywords) $progress += 20;
-        if ($this->header) $progress += 20;
+        if ($this->title) $progress += 25;
+        if ($this->description) $progress += 25;
+        if ($this->keywords) $progress += 25;
+        if ($this->header) $progress += 15;
         if ($this->imageAuthors) $progress += 5;
         if ($this->imageExtra) $progress += 5;
         return $progress;

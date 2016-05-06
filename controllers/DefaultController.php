@@ -79,13 +79,26 @@ class DefaultController extends Controller
         Image::$reGenPicture = false;
         foreach ($images as $i) {
             foreach ($ingot->imageExtra as $ie) {
-                $author = new ImageExtra();
+                $extra = new ImageExtra();
                 $data = $ie->attributes;
                 $data['image_id'] = $i->id;
                 unset($data['id']);
-                $author->setAttributes($data, false);
-                $i->link('imageExtra', $author);
+                $extra->setAttributes($data, false);
+                $i->link('imageExtra', $extra);
             }
+            $i->save();
+        }
+        Image::$reGenPicture = true;
+        return $this->redirect(['image/index', 'currentPath' => Module::$currentPath]);
+    }
+
+    public function actionCloneTags($id)
+    {
+        $images = Module::getImages();
+        $ingot = Image::findOne($id);
+        Image::$reGenPicture = false;
+        foreach ($images as $i) {
+            $i->tagValues = $ingot->tagValues;
             $i->save();
         }
         Image::$reGenPicture = true;
@@ -111,7 +124,6 @@ class DefaultController extends Controller
         Image::$reGenPicture = true;
         return $this->redirect(['image/index', 'currentPath' => Module::$currentPath]);
     }
-
 
     public function actionCreateAlbum($name)
     {

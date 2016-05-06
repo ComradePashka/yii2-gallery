@@ -72,7 +72,7 @@ $this->registerJs("
     }
     $authorlist = "";
     foreach ($model->imageAuthors as $author) {
-        $authorlist .= "<li>{$author->user->username} [ {$author->notes} ]</li>";
+        $authorlist .= "<li>{$author->user->profile->name} (<b>{$author->user->username}</b>) [ <i>{$author->notes}</i> ]</li>";
     }
     $extralist = "";
     foreach ($model->imageExtra as $extra) {
