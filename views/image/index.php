@@ -51,6 +51,7 @@ foreach ($images as $i) {
         $btnCloneTags .= " btn-success";
     } else $btnCloneTags .= " btn-warning";
 
+    $btnCloneMetaEx = 0;
     if ($i->Progress >= 20) $btnCloneMetaEx = " btn-info";
     if ($i->Progress >= 40) $btnCloneMetaEx = " btn-warning";
     if ($i->Progress >= 80) $btnCloneMetaEx = " btn-success";
