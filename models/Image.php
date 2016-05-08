@@ -130,6 +130,7 @@ class Image extends ActiveRecord
 
     public function getHtml($version, $opt=[])
     {
+        $opts['data-image-id'] = $this->id;
         return Html::img($this->getWebVersionPath($version), array_merge(['alt' => $this->title, 'title' => $this->description], $opt));
     }
 
@@ -195,5 +196,10 @@ class Image extends ActiveRecord
     public function getTranslations()
     {
         return $this->hasMany(ImageTranslation::className(), ['image_id' => 'id']);
+    }
+
+    public static function find()
+    {
+        return new ImageQuery(get_called_class());
     }
 }
