@@ -130,7 +130,7 @@ class Image extends ActiveRecord
 
     public function getHtml($version, $opt=[])
     {
-        $opts['data-image-id'] = $this->id;
+        $opt['data-image-id'] = $this->id;
         return Html::img($this->getWebVersionPath($version), array_merge(['alt' => $this->title, 'title' => $this->description], $opt));
     }
 

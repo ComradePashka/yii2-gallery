@@ -22,7 +22,7 @@ $this->registerJs("
     });
     $('.btnDeleteImage').on('click', function (e) {
         if (confirm('УДАЛИТЬ???')) {
-            location.href = '" . Url::to(['image/delete', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "&id=' + $(this).attr('image-id');
+            location.href = '" . Url::to(['image/delete', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "&id=' + $(this).data('image-id');
         }
     });
 ");
@@ -77,7 +77,7 @@ foreach ($images as $i) {
 <div class='col-xs-2'>
 <div class='thumbnail'>" .
 Html::a($i->getHtml("-tiny", ['class' => 'thumb' ,'title' => $i->Name]),
-    ['image/update', 'id' => $i->id, 'currentPath' => Module::$currentPath]) .
+    ['image/update', 'id' => $i->id, 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) .
 "<div class='caption text-center'>{$i->Name}
 <div class='progress zero-margin'>
   <div class='progress-bar' role='progressbar' aria-valuenow='{$i->Progress}' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: {$i->Progress}%;'>
@@ -106,7 +106,7 @@ Html::a($i->getHtml("-tiny", ['class' => 'thumb' ,'title' => $i->Name]),
         Html::a(Icon::show('notificationbottom', [], Icon::WHHG), ['image-extra/', 'image_id' => $i->id], ['class' => $btnImageExtra]) .
         Html::a(Icon::show('user', [], Icon::WHHG), ['image-author/', 'image_id' => $i->id], ['class' => $btnImageAuthors]) .
         Html::a(Icon::show('resize', [], Icon::WHHG), ['image/save-versions', 'id' => $i->id, 'currentPath' => Module::$currentPath], ['class' => $btnImageThumbs]) .
-        Html::button(Icon::show('remove', [], Icon::WHHG), ['class' => 'btn btn-sm btn-danger btnDeleteImage', 'image-id' => $i->id]),
+        Html::button(Icon::show('remove', [], Icon::WHHG), ['class' => 'btn btn-sm btn-danger btnDeleteImage', 'data-image-id' => $i->id]),
         ['class' => 'btn-group btn-group-xs']
     );
 

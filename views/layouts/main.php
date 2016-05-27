@@ -9,6 +9,7 @@ use comradepashka\gallery\Module;
 use yii\helpers\Url;
 
 $this->registerJs("
+    $.fn.bootstrapBtn = $.fn.button.noConflict();
     $('#createAlbum' ).dialog({
         autoOpen: false,
         width: 320,

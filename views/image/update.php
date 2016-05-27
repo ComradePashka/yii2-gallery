@@ -29,7 +29,7 @@ $this->registerJs("
                     $('#albums').append('<a class=\'list-group-item album-item btnChangePath\' cwd=\'' + cwd + '\'>' + name + '</a>');
                 });
                 $.each(data.images, function(id, src) {
-                    $('#images').append('<img class=\'imgChangePath\' src=\'' + src + '\' image-id=\'' + id + '\' width=64 heigth=64>');
+                    $('#images').append('<img class=\'imgChangePath\' src=\'' + src + '\' data-image-id=\'' + id + '\' width=64 heigth=64>');
                 });
             })
             .error(function (jqXHR, status) {
@@ -51,7 +51,7 @@ $this->registerJs("
 //            location.href = '" . Url::to(['default/ajax-merge-image', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "';
             $.ajax({
                 url: '" . Url::to(['default/ajax-merge-image'])  ."',
-                data: {id: " . $model->id . ", newImageId: $(this).attr('image-id')}
+                data: {id: " . $model->id . ", newImageId: $(this).data('image-id')}
             })
             .done(function (data) {
                 console.log(data);
