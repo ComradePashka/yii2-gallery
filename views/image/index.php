@@ -17,12 +17,12 @@ use comradepashka\gallery\Module;
 $this->registerJs("
     $('#btnDelAll').on('click', function (e) {
         if (confirm('УДАЛИТЬ ВСЁ???!!!!!')) {
-            location.href = '" . Url::to(['default/delete-all', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "';
+            location.href = '" . Url::to(['default/delete-all', 'currentPath' => Module::$currentPath, 'galleryName' => Module::$galleryName]) . "';
         }
     });
     $('.btnDeleteImage').on('click', function (e) {
         if (confirm('УДАЛИТЬ???')) {
-            location.href = '" . Url::to(['image/delete', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "&id=' + $(this).data('image-id');
+            location.href = '" . Url::to(['image/delete', 'currentPath' => Module::$currentPath, 'galleryName' => Module::$galleryName]) . "&id=' + $(this).data('image-id');
         }
     });
 ");
@@ -77,7 +77,7 @@ foreach ($images as $i) {
 <div class='col-xs-2'>
 <div class='thumbnail'>" .
 Html::a($i->getHtml("-tiny", ['class' => 'thumb' ,'title' => $i->Name]),
-    ['image/update', 'id' => $i->id, 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) .
+    ['image/update', 'id' => $i->id, 'currentPath' => Module::$currentPath, 'galleryName' => Module::$galleryName]) .
 "<div class='caption text-center'>{$i->Name}
 <div class='progress zero-margin'>
   <div class='progress-bar' role='progressbar' aria-valuenow='{$i->Progress}' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: {$i->Progress}%;'>
@@ -124,7 +124,7 @@ echo Html::tag("div", $row, ['class' => 'row']);
 //
 
 echo DropZone::widget([
-    'url' => Url::to(["image/upload", 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]),
+    'url' => Url::to(["image/upload", 'currentPath' => Module::$currentPath, 'galleryName' => Module::$galleryName]),
     'name' => 'file',
     'htmlOptions' => ['class' => 'col-xs-12'],
     'options' => [

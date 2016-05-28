@@ -48,14 +48,14 @@ $this->registerJs("
     });
     $('body').on('click', '.imgChangePath', function (e) {
         if (confirm('Заменить на эту фотку? Сто пудов?')) {
-//            location.href = '" . Url::to(['default/ajax-merge-image', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "';
+//            location.href = '" . Url::to(['default/ajax-merge-image', 'currentPath' => Module::$currentPath, 'galleryName' => Module::$galleryName]) . "';
             $.ajax({
                 url: '" . Url::to(['default/ajax-merge-image'])  ."',
                 data: {id: " . $model->id . ", newImageId: $(this).data('image-id')}
             })
             .done(function (data) {
                 console.log(data);
-                location.href = '" . Url::to(['image/update', 'currentPath' => Module::$currentPath, 'gallery' => Module::$galleryName]) . "&id=' + data.id + '';
+                location.href = '" . Url::to(['image/update', 'currentPath' => Module::$currentPath, 'galleryName' => Module::$galleryName]) . "&id=' + data.id + '';
             })
             .error(function (jqXHR, status) {
                 alert('Error!' + status);

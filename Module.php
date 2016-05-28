@@ -44,6 +44,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public static function getGallery()
     {
+        yii::trace("GNAME:" . self::$galleryName, "GALERY");
         if (!isset(self::$_galleries[self::$galleryName])) self::$galleryName = 'default';
         return self::$_galleries[self::$galleryName];
     }
