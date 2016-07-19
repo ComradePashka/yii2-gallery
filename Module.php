@@ -63,7 +63,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         $albums = [];
         if (self::$currentPath != "/") $albums['..'] = self::getParentPath(self::$currentPath);
-        $path = self::getGallery()->getWebRootPath() . "/" . self::$currentPath;
+        $path = self::getGallery()->getWebRootPath() . self::$currentPath;
         $h = opendir($path);
         while (false !== ($entry = readdir($h))) {
             if ($entry != "." && $entry != "..") {

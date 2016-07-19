@@ -121,7 +121,7 @@ $form = ActiveForm::begin([
     </div>
 </div>
 <div class="form-group">
-    <?= Html::a("<span class='glyphicon glyphicon-arrow-left'></span> Cancel", ['image/', 'currentPath' => Module::$currentPath], ['class' => 'btn btn-default']) ?>
+    <?= Html::a("<span class='glyphicon glyphicon-arrow-left'></span> Cancel", ['image/', 'currentPath' => Module::$currentPath, 'galleryName' => Module::$galleryName], ['class' => 'btn btn-default']) ?>
     <?= Html::submitButton($model->isNewRecord ? Yii::t('i18n', 'Create') : Yii::t('i18n', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 </div>
 <?php
