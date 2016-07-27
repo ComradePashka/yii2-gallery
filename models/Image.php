@@ -35,6 +35,10 @@ class Image extends ActiveRecord
     const THUMBS_PARTIAL = 2;
     const THUMBS_ALL = 3;
 
+    const ORIENTATION_HORIZONTAL = 1;
+    const ORIENTATION_VERTIACAL = 2;
+    const ORIENTATION_SQUARE = 3;
+
     public static $reGenPicture = true;
 
     public static function tableName()
@@ -114,6 +118,17 @@ class Image extends ActiveRecord
         if ($this->isNewRecord) return Image::STATE_UNSAVED;
         if (!file_exists($this->RootPath)) return Image::STATE_BROKEN;
         return Image::STATE_NORMAL;
+    }
+
+    public function getOrientation()
+    {
+        $imagine = YiiImage::getImagine();
+        $newImage = $imagine->open($this->RootPath);
+        $w = $newImage->getSize()->getWidth();
+        $h = $newImage->getSize()->getHeight();
+        if ($w == $h) return self::ORIENTATION_SQUARE;
+        if ($w > $h) return self::ORIENTATION_HORIZONTAL;
+        else return self::ORIENTATION_VERTIACAL;
     }
 
     public function getProgress()
