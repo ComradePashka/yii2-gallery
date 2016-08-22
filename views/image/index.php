@@ -30,7 +30,8 @@ $this->registerJs("
 $n = 0;
 $images = Module::getImages();
 $row = Html::tag("div",
-        Html::button('<span class="glyphicon glyphicon-remove"></span>DELETE ALL!!!',['id' => 'btnDelAll', 'class' => 'btn btn-danger']),
+        Html::button('<span class="glyphicon glyphicon-remove"></span>DELETE ALL!!!',['id' => 'btnDelAll', 'class' => 'btn btn-danger']) .
+        Html::button('<span class="glyphicon glyphicon-indent-left"></span>Rebuild',['id' => 'btnRebuildAll', 'class' => 'btn btn-info']) ,
     ['class' => 'col-xs-12' . ((count($images) == 0) ? " hidden" : "" )]);
 
 foreach ($images as $i) {

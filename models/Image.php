@@ -120,6 +120,18 @@ class Image extends ActiveRecord
         return Image::STATE_NORMAL;
     }
 
+    public function getThumbsState()
+    {
+        $thumbcount = 0;
+        $versioncount = count(Module::getGallery()->versions);
+        foreach (Module::getGallery()->versions as $version => $func) {
+            $fn = preg_replace("#(.*)(\.)([^\.]+)$#", "\\1$version.\\3", $this->RootPath);
+            if (file_exists($fn)) $thumbcount++;
+        }
+        if ($thumbcount == 0) return Image::THUMBS_EMPTY;
+        if ($thumbcount < $versioncount) return Image::THUMBS_PARTIAL; else return Image::THUMBS_ALL;
+    }
+
     public function getOrientation()
     {
         $imagine = YiiImage::getImagine();

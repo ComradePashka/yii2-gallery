@@ -57,6 +57,15 @@ class DefaultController extends Controller
         return $this->redirect(['image/index', 'currentPath' => Module::$currentPath]);
     }
 
+    public function actionRebuild()
+    {
+        $images = Module::getImages();
+        foreach ($images as $i) {
+            $i->saveVersions();
+        }
+        return $this->redirect(['image/index', 'currentPath' => Module::$currentPath]);
+    }
+
     public function actionCloneMeta($id)
     {
         $images = Module::getImages();
