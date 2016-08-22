@@ -6,6 +6,7 @@
  * Time: 6:43 PM
  */
 
+use comradepashka\gallery\models\Image;
 use comradepashka\gallery\models\ImageSeo;
 use yii\bootstrap\ButtonDropdown;
 use yii\helpers\Url;
@@ -37,7 +38,6 @@ $row = Html::tag("div",
 foreach ($images as $i) {
     $allBtnClass = "btn btn-sm";
     $btnImageThumbs = $btnCloneMeta = $btnCloneExtra = $btnCloneAuthor = $btnCloneTags= $btnImageDelete = $allBtnClass;
-    $btnImageThumbs .= " btn-info";
     $btnImageExtra = $btnImageAuthors = "$allBtnClass btnExtraDialog";
 
     if ($i->imageExtra) {
@@ -51,6 +51,12 @@ foreach ($images as $i) {
     if ($i->tags) {
         $btnCloneTags .= " btn-success";
     } else $btnCloneTags .= " btn-warning";
+
+    switch ($i->thumsState) {
+        case Image::THUMBS_ALL: $btnImageThumbs .= " btn-success"; break;
+        case Image::THUMBS_PARTIAL: $btnImageThumbs .= " btn-warning"; break;
+        case Image::THUMBS_EMPTY: $btnImageThumbs .= " btn-error"; break;
+    }
 
     $btnCloneMetaEx = 0;
     if ($i->Progress >= 20) $btnCloneMetaEx = " btn-info";
